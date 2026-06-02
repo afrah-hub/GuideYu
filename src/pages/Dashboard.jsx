@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import HeroSection from '../components/dashboard/HeroSection';
 import NextStepsPanel from '../components/dashboard/NextStepsPanel';
 import AIInsights from '../components/dashboard/AIInsights';
-import SkillProgressSection from '../components/dashboard/SkillProgressSection';
 import CareerRecommendations from '../components/dashboard/CareerRecommendations';
 import ActivityFeed from '../components/dashboard/ActivityFeed';
 
@@ -82,7 +81,9 @@ const Dashboard = () => {
         <div className="xl:col-span-2">
           <NextStepsPanel
             data={sections.nextSteps.data}
-            loading={sections.nextSteps.loading}
+            overview={sections.overview.data}
+            nextSteps={sections.nextSteps.data}
+            loading={sections.nextSteps.loading || sections.overview.loading}
           />
         </div>
 
@@ -93,14 +94,6 @@ const Dashboard = () => {
             loading={sections.activity.loading}
           />
         </div>
-      </div>
-
-      {/* 5. Neural Growth Grid (Bottom) */}
-      <div className="w-full">
-        <SkillProgressSection
-          skills={sections.careerPath.data?.skills}
-          loading={sections.careerPath.loading}
-        />
       </div>
     </div>
   );

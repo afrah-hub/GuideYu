@@ -290,7 +290,7 @@ const ForgotPassword = () => {
                     </div>
                   </div>
                   <h1 className="text-3xl font-black text-[var(--text-primary)]  tracking-tighter mb-2">
-                    Neural <span className="text-[var(--accent-primary)]    dark:from-indigo-400 dark:to-purple-400">Recalibration</span>
+                    Account <span className="text-[var(--accent-primary)]    dark:from-indigo-400 dark:to-purple-400">Security</span>
                   </h1>
                   <p className="text-[var(--text-tertiary)]  text-sm font-medium">Set your new secure access credentials.</p>
                 </div>
@@ -364,7 +364,7 @@ const ForgotPassword = () => {
                 </div>
                 <h2 className="text-3xl font-black text-[var(--text-primary)]  mb-4 tracking-tighter">Success!</h2>
                 <p className="text-[var(--text-tertiary)]  text-sm leading-relaxed mb-8 font-medium">
-                  Your identity has been verified and your password recalibrated. Redirecting to login...
+                  Your identity has been verified and your password updated. Redirecting to login...
                 </p>
                 <div className="w-full h-1.5 bg-slate-100 /5 rounded-full overflow-hidden">
                   <motion.div

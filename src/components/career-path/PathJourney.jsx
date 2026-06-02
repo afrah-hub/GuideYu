@@ -1,15 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, Zap, Lock, ChevronDown, Rocket, Compass } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const PathJourney = ({ journey, loading }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const targetCareer = searchParams.get('career');
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        {[1, 2, 3].map(i => <div key={i} className="h-32 bg-[var(--bg-overlay)] rounded-[32px] animate-pulse" />)}
+      <div className="space-y-4 md:space-y-6">
+        {[1, 2, 3].map(i => <div key={i} className="h-24 md:h-32 bg-[var(--bg-overlay)] rounded-[24px] md:rounded-[32px] animate-pulse" />)}
       </div>
     );
   }
@@ -17,24 +19,31 @@ const PathJourney = ({ journey, loading }) => {
   if (!journey || journey.length === 0) return null;
 
   const handleResume = (step) => {
-    navigate('/learning-path');
+    const params = new URLSearchParams();
+    if (targetCareer) {
+      params.set('career', targetCareer);
+    } else if (step.roleName) {
+      params.set('career', step.roleName);
+    }
+    navigate(`/learning-path?${params.toString()}`);
   };
 
   return (
     <div className="relative w-full">
-      <div className="flex items-center gap-4 mb-10">
-        <div className="p-3 bg-[var(--bg-subtle)] rounded-2xl text-[var(--text-accent)] shadow-sm">
-          <Compass size={24} />
+      <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-10">
+        <div className="p-2.5 md:p-3 bg-[var(--bg-subtle)] rounded-xl md:rounded-2xl text-[var(--text-accent)] shadow-sm">
+          <Compass size={20} className="md:hidden" />
+          <Compass size={24} className="hidden md:block" />
         </div>
         <div>
-          <h2 className="text-xl font-black text-[var(--text-primary)] tracking-tighter">Strategic Roadmap</h2>
-          <p className="text-sm text-[var(--text-secondary)] font-medium">Your optimized trajectory to career mastery.</p>
+          <h2 className="text-lg md:text-xl font-black text-[var(--text-primary)] tracking-tighter">Strategic Roadmap</h2>
+          <p className="text-xs md:text-sm text-[var(--text-secondary)] font-medium">Your optimized career path to success.</p>
         </div>
       </div>
 
-      <div className="relative pl-10 ml-4 lg:ml-8">
+      <div className="relative pl-8 md:pl-10 ml-2 md:ml-4 lg:ml-8">
         {/* Glowing track line */}
-        <div className="absolute left-[20px] lg:left-[28px] top-4 bottom-4 w-1 bg-[var(--bg-overlay)] rounded-full overflow-hidden">
+        <div className="absolute left-[14px] md:left-[20px] lg:left-[28px] top-4 bottom-4 w-0.5 md:w-1 bg-[var(--bg-overlay)] rounded-full overflow-hidden">
           <motion.div
             initial={{ height: 0 }}
             animate={{ height: "100%" }}
@@ -59,11 +68,11 @@ const PathJourney = ({ journey, loading }) => {
                 className={`relative group ${isLocked ? 'opacity-50 grayscale-[50%]' : ''}`}
               >
                 {/* Node Marker */}
-                <div
-                  className={`absolute -left-[45px] lg:-left-[53px] top-6 w-14 h-14 rounded-full border-[4px] flex items-center justify-center z-10 transition-transform duration-500 group-hover:scale-110 ${isTarget ? 'bg-[var(--accent-primary)] border-[var(--border-default)] text-[var(--text-primary)] shadow-md shadow-[var(--accent-primary-subtle)]' :
-                      isCompleted ? 'bg-[var(--color-success-subtle)] border-[var(--color-success)] text-[var(--color-success)] shadow-sm' :
-                        isActive ? 'bg-[var(--bg-surface)] border-[var(--accent-primary)] text-[var(--text-accent)] shadow-md shadow-[var(--accent-primary-subtle)]' :
-                          'bg-[var(--bg-subtle)] border-[var(--border-default)] text-[var(--text-tertiary)]'
+              <div
+                  className={`absolute -left-[36px] md:-left-[45px] lg:-left-[53px] top-5 md:top-6 w-10 h-10 md:w-14 md:h-14 rounded-full border-[3px] md:border-[4px] flex items-center justify-center z-10 transition-transform duration-500 group-hover:scale-110 ${isTarget ? 'bg-[var(--accent-primary)] border-[var(--border-default)] text-[var(--text-primary)] shadow-md shadow-[var(--accent-primary-subtle)]' :
+                    isCompleted ? 'bg-[var(--color-success-subtle)] border-[var(--color-success)] text-[var(--color-success)] shadow-sm' :
+                      isActive ? 'bg-[var(--bg-surface)] border-[var(--accent-primary)] text-[var(--text-accent)] shadow-md shadow-[var(--accent-primary-subtle)]' :
+                        'bg-[var(--bg-subtle)] border-[var(--border-default)] text-[var(--text-tertiary)]'
                     }`}
                 >
                   {isTarget ? <Rocket size={20} /> :
@@ -77,24 +86,22 @@ const PathJourney = ({ journey, loading }) => {
                 </div>
 
                 {/* Content Card */}
-                <div className={`p-8 rounded-[32px] bg-[var(--bg-surface)] backdrop-blur-xl border transition-all duration-500 ${isTarget ? 'border-[var(--accent-primary)] shadow-lg shadow-[var(--accent-primary-subtle)] bg-[var(--accent-primary-subtle)]' :
-                    isCompleted ? 'border-[var(--color-success-subtle)] hover:border-[var(--color-success)]' :
-                      isActive ? 'border-[var(--border-default)] hover:border-[var(--accent-primary)] shadow-sm' :
-                        'border-[var(--border-faint)] hover:border-[var(--border-default)]'
+                <div className={`p-4 md:p-8 rounded-[20px] md:rounded-[32px] bg-[var(--bg-surface)] backdrop-blur-xl border transition-all duration-500 ${isTarget ? 'border-[var(--accent-primary)] shadow-lg shadow-[var(--accent-primary-subtle)] bg-[var(--accent-primary-subtle)]' :
+                  isCompleted ? 'border-[var(--color-success-subtle)] hover:border-[var(--color-success)]' :
+                    isActive ? 'border-[var(--border-default)] hover:border-[var(--accent-primary)] shadow-sm' :
+                      'border-[var(--border-faint)] hover:border-[var(--border-default)]'
                   }`}>
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap items-center gap-3">
-                        {isTarget && <span className="px-3 py-1 bg-[var(--accent-primary)] text-[var(--text-primary)] text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm">Target Role</span>}
-                        {isCompleted && <span className="px-3 py-1 bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)] text-[10px] font-black uppercase tracking-widest rounded-full">Completed</span>}
-                        {isActive && <span className="px-3 py-1 bg-[var(--bg-subtle)] text-[var(--text-accent)] border border-[var(--border-faint)] text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)] animate-pulse" /> Active Stage</span>}
-
-                        <h4 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter w-full mt-2">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                        {isTarget && <span className="px-2 md:px-3 py-1 bg-[var(--accent-primary)] text-[var(--text-primary)] text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm">Target Role</span>}
+                        {isCompleted && <span className="px-2 md:px-3 py-1 bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)] text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-full">Completed</span>}
+                        {isActive && <span className="px-2 md:px-3 py-1 bg-[var(--bg-subtle)] text-[var(--text-accent)] border border-[var(--border-faint)] text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)] animate-pulse" /> Active Stage</span>}
+                        <h4 className="text-lg md:text-2xl font-black text-[var(--text-primary)] tracking-tighter w-full mt-1 md:mt-2">
                           {step.roleName}
                         </h4>
                       </div>
-
-                      <p className="text-[15px] text-[var(--text-secondary)] font-medium leading-relaxed max-w-2xl">
+                      <p className="text-xs md:text-[15px] text-[var(--text-secondary)] font-medium leading-relaxed max-w-2xl mt-2">
                         {step.description || `Milestone to establish foundational mastery for ${step.roleName}.`}
                       </p>
                     </div>
@@ -102,9 +109,9 @@ const PathJourney = ({ journey, loading }) => {
                     {isActive && (
                       <button
                         onClick={() => handleResume(step)}
-                        className="px-6 py-3 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-primary)] rounded-xl font-black text-xs uppercase tracking-widest shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0 flex items-center gap-2"
+                        className="px-5 md:px-6 py-2.5 md:py-3 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-primary)] rounded-xl font-black text-xs uppercase tracking-widest shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0 flex items-center gap-2 w-full md:w-auto justify-center"
                       >
-                        Resume
+                        Start
                         <ChevronDown size={16} className="-rotate-90" />
                       </button>
                     )}

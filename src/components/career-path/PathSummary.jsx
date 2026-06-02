@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Target, ArrowRight, BookOpen, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const PathSummary = ({ summary, journey, loading }) => {
   const navigate = useNavigate();
+  const [lastStopped, setLastStopped] = useState(null);
+
+  useEffect(() => {
+    const fetchLastStopped = async () => {
+      try {
+        const response = await fetch('/api/lessons/last-stopped', { credentials: 'include' });
+        if (response.ok && response.status !== 204) {
+          const data = await response.json();
+          setLastStopped(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch last stopped lesson:', err);
+      }
+    };
+    fetchLastStopped();
+  }, []);
 
   if (loading) {
     return (
@@ -17,9 +33,13 @@ const PathSummary = ({ summary, journey, loading }) => {
   const currentStage = journey?.find(s => s.isCurrent)?.roleName || summary.currentRole || 'Beginner';
 
   const handleContinueLearning = () => {
-    const params = new URLSearchParams();
-    if (summary.targetRole) params.set('career', summary.targetRole);
-    navigate(`/learning-path?${params.toString()}`);
+    if (lastStopped && lastStopped.career === summary.targetRole) {
+      navigate(`/lessons/${lastStopped.roadmapId}/${lastStopped.moduleId}/${encodeURIComponent(lastStopped.topicId)}?career=${encodeURIComponent(lastStopped.career)}&module=${encodeURIComponent(lastStopped.moduleName)}`);
+    } else {
+      const params = new URLSearchParams();
+      if (summary.targetRole) params.set('career', summary.targetRole);
+      navigate(`/learning-path?${params.toString()}`);
+    }
   };
 
   return (
@@ -39,11 +59,11 @@ const PathSummary = ({ summary, journey, loading }) => {
             </span>
           </div>
 
-          <div className="space-y-2">
-            <h1 className="text-2xl lg:text-3xl font-extrabold text-[var(--text-primary)] tracking-tight leading-tight">
+          <div className="space-y-1.5 md:space-y-2">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[var(--text-primary)] tracking-tight leading-tight">
               Master the path to <span className="text-gradient-brand">{summary.targetRole}</span>
             </h1>
-            <p className="text-sm text-[var(--text-secondary)] font-medium max-w-lg leading-relaxed">
+            <p className="text-xs md:text-sm text-[var(--text-secondary)] font-medium max-w-lg leading-relaxed">
               You're currently at the <span className="text-[var(--text-primary)] font-bold">{currentStage}</span> stage.
               We've mapped out the exact skills you need.
             </p>

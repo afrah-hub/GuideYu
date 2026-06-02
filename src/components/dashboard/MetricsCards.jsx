@@ -20,7 +20,7 @@ const StatCard = ({ title, value, change, iconName, trendDirection, timeframe, i
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="relative p-8 rounded-[32px] bg-[var(--bg-surface)] backdrop-blur-xl border border-[var(--border-default)] shadow-sm group transition-all duration-500"
+      className="relative p-5 md:p-8 rounded-[24px] md:rounded-[32px] bg-[var(--bg-surface)] backdrop-blur-xl border border-[var(--border-default)] shadow-sm group transition-all duration-500"
     >
       {/* Trend Glow Background */}
       <div className={`absolute -right-10 -bottom-10 w-40 h-40 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${isPositive ? 'bg-emerald-500' : isNegative ? 'bg-rose-500' : 'bg-[var(--bg-subtle)]0'
@@ -47,7 +47,7 @@ const StatCard = ({ title, value, change, iconName, trendDirection, timeframe, i
         <p className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.3em] mb-2">
           {title}
         </p>
-        <h4 className="text-[36px] font-black text-[var(--text-primary)] leading-none tracking-tighter">
+        <h4 className="text-[28px] md:text-[36px] font-black text-[var(--text-primary)] leading-none tracking-tighter">
           {value}
         </h4>
       </div>
@@ -58,7 +58,7 @@ const StatCard = ({ title, value, change, iconName, trendDirection, timeframe, i
 const MetricsCards = ({ data, loading }) => {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8">
         {[1, 2, 3].map(i => (
           <div key={i} className="h-[180px] bg-[var(--bg-overlay)] rounded-[32px] animate-pulse" />
         ))}
@@ -69,7 +69,7 @@ const MetricsCards = ({ data, loading }) => {
   if (!data || data.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8">
       {data.map((metric, i) => (
         <StatCard key={i} {...metric} iconName={metric.icon} index={i} />
       ))}

@@ -1,255 +1,399 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  BookOpen, 
-  Video, 
-  FileText, 
-  ExternalLink, 
-  Clock, 
-  ChevronRight, 
-  Search,
-  Sparkles,
-  ArrowRight,
-  Library,
+import {
   ChevronLeft,
-  Filter,
+  BookOpen,
+  Clock,
+  Sparkles,
+  CheckCircle2,
+  ArrowRight,
   Layers,
+  Layout,
+  Terminal,
   Zap,
-  PlayCircle
+  Lock,
+  ChevronRight,
+  Info,
+  Award,
+  PlayCircle,
+  Bookmark
 } from 'lucide-react';
 import { recommendationService } from '../services/recommendationService';
 
 const StudyMaterials = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const [moduleName, setModuleName] = useState(searchParams.get('module') || 'Core Module');
+  const [targetCareer, setTargetCareer] = useState(searchParams.get('career') || '');
+  const roadmapId = searchParams.get('roadmapId') || 0;
+  const moduleId = searchParams.get('moduleId') || 0;
+  const savedMapId = searchParams.get('savedMapId') || 0;
+
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [error, setError] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [savedId, setSavedId] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchMaterials = async () => {
+    const fetchSyllabus = async () => {
       try {
         setLoading(true);
-        const materials = await recommendationService.getStudyMaterials();
-        setData(materials);
+        let activeModule = searchParams.get('module');
+        let activeCareer = searchParams.get('career');
+
+        if (!activeCareer || !activeModule) {
+          const overviewRes = await fetch('/api/careerpath/overview', { credentials: 'include' });
+          if (overviewRes.ok) {
+            const overviewData = await overviewRes.json();
+            if (!activeCareer) {
+              activeCareer = overviewData?.summary?.targetRole;
+            }
+            if (!activeModule) {
+              activeModule = overviewData?.journey?.[0]?.skills?.[0]?.name || 'Core Module';
+            }
+          }
+        }
+
+        setModuleName(activeModule || 'Core Module');
+        setTargetCareer(activeCareer || 'Software Engineer');
+
+        const result = await recommendationService.getSyllabus(
+          activeModule || 'Core Module', 
+          activeCareer || undefined,
+          savedMapId || undefined
+        );
+        setData(result);
+        setError(null);
       } catch (err) {
-        console.error('Failed to load study materials:', err);
+        console.error('Failed to load study materials syllabus:', err);
+        setError(err.message || 'Failed to fetch learning path curriculum.');
       } finally {
         setLoading(false);
       }
     };
-    fetchMaterials();
-  }, []);
+    fetchSyllabus();
+  }, [searchParams]);
 
-  const getTypeIcon = (type) => {
-    switch (type?.toLowerCase()) {
-      case 'video': return <Video size={20} />;
-      case 'article': return <FileText size={20} />;
-      case 'e-book': return <BookOpen size={20} />;
-      default: return <Library size={20} />;
-    }
-  };
+  useEffect(() => {
+    const checkSavedStatus = async () => {
+      if (!targetCareer || !moduleName) return;
+      try {
+        const res = await fetch('/api/recommendations/saved-career-maps', { credentials: 'include' });
+        if (res.ok) {
+          const savedMaps = await res.json();
+          const match = savedMaps.find(m => 
+            m.careerName.toLowerCase() === targetCareer.toLowerCase() && 
+            m.moduleName.toLowerCase() === moduleName.toLowerCase()
+          );
+          if (match) {
+            setIsSaved(true);
+            setSavedId(match.id);
+          } else {
+            setIsSaved(false);
+            setSavedId(null);
+          }
+        }
+      } catch (err) {
+        console.error('Error checking saved status:', err);
+      }
+    };
+    checkSavedStatus();
+  }, [targetCareer, moduleName, loading]);
 
-  const getTypeColor = (type) => {
-    switch (type?.toLowerCase()) {
-      case 'video': return 'text-[#E11D48] bg-[#FFF1F2] border-[#FDA4AF]/20';
-      case 'article': return 'text-[#059669] bg-[#F0FDF4] border-[#6EE7B7]/20';
-      case 'e-book': return 'text-[#D97706] bg-[#FFFBEB] border-[#FCD34D]/20';
-      default: return 'text-[#2774AE] bg-[#EEF4F8] border-[#2774AE]/10';
+  const handleSaveToggle = async () => {
+    if (saving || !data) return;
+    try {
+      setSaving(true);
+      if (isSaved) {
+        const res = await fetch(`/api/recommendations/saved-career-maps/${savedId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        if (res.ok) {
+          setIsSaved(false);
+          setSavedId(null);
+        } else {
+          throw new Error('Failed to unsave career map.');
+        }
+      } else {
+        const res = await fetch('/api/recommendations/save-career-map', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            careerName: targetCareer,
+            moduleName: moduleName,
+            syllabusData: data
+          }),
+          credentials: 'include'
+        });
+        if (res.ok) {
+          const resData = await res.json();
+          setIsSaved(true);
+          setSavedId(resData.id);
+        } else {
+          throw new Error('Failed to save career map.');
+        }
+      }
+    } catch (err) {
+      console.error('Error toggling save state:', err);
+      alert(err.message || 'An error occurred.');
+    } finally {
+      setSaving(false);
     }
   };
 
   const SkeletonItem = () => (
-    <div className="p-10 rounded-[3rem] bg-white border border-[var(--border-default)] animate-pulse space-y-6">
-       <div className="flex justify-between">
-          <div className="w-14 h-14 bg-[var(--bg-subtle)] rounded-2xl" />
-          <div className="w-20 h-6 bg-[var(--bg-subtle)] rounded-full" />
-       </div>
-       <div className="space-y-3">
-          <div className="h-6 w-2/3 bg-[var(--bg-subtle)] rounded-lg" />
-          <div className="h-4 w-full bg-[var(--bg-subtle)] rounded-lg" />
-          <div className="h-4 w-5/6 bg-[var(--bg-subtle)] rounded-lg" />
-       </div>
-       <div className="h-8 w-1/4 bg-[var(--bg-subtle)] rounded-lg pt-4" />
+    <div className="p-8 rounded-[2.5rem] bg-bg-surface border border-border-default animate-pulse space-y-6">
+      <div className="flex gap-6">
+        <div className="w-12 h-12 bg-bg-subtle rounded-2xl" />
+        <div className="flex-1 space-y-3">
+          <div className="h-6 w-1/3 bg-bg-subtle rounded-lg" />
+          <div className="h-4 w-1/4 bg-bg-subtle rounded-lg" />
+        </div>
+      </div>
+      <div className="h-4 w-full bg-bg-subtle rounded-lg" />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="h-12 bg-bg-subtle rounded-xl" />
+        <div className="h-12 bg-bg-subtle rounded-xl" />
+      </div>
     </div>
   );
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-bg-base flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-bg-surface p-12 rounded-[3rem] border border-border-default shadow-2xl text-center space-y-8 max-w-lg"
+        >
+          <div className="w-24 h-24 bg-[#FFF1F2] dark:bg-rose-950/20 rounded-[2.5rem] flex items-center justify-center mx-auto text-[#E11D48] dark:text-rose-400 shadow-xl">
+            <Info size={48} />
+          </div>
+          <div className="space-y-3">
+            <h2 className="text-3xl font-black text-text-primary tracking-tight">Service Unavailable</h2>
+            <p className="text-text-secondary font-medium text-lg leading-relaxed">{error}</p>
+          </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="w-full py-5 bg-accent-primary text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-accent-primary/20 hover:scale-[1.02] transition-all"
+          >
+            Retry Connection
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  const completedTopicsCount = data?.topics?.filter(t => t.isCompleted || t.IsCompleted).length || 0;
+  const totalTopicsCount = data?.topics?.length || 0;
+  const progressPercentage = totalTopicsCount > 0 ? Math.round((completedTopicsCount / totalTopicsCount) * 100) : 0;
+
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] pb-32">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-10 space-y-16">
-        
+    <div className="min-h-screen bg-bg-base text-text-primary pb-32">
+      {/* Background Orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-accent-primary/[0.03] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent-primary/[0.02] rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
+      </div>
+
+      <div className="max-w-5xl mx-auto px-6 pt-6 relative z-10 space-y-16">
+
         {/* HEADER AREA */}
-        <header className="relative p-12 lg:p-16 rounded-[4rem] bg-[#002E5D] text-white overflow-hidden shadow-[0_40px_100px_rgba(0,46,93,0.3)]">
-           <div className="absolute top-0 right-0 p-12 opacity-10">
-              <Library size={300} />
-           </div>
-           <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[var(--accent-primary)] rounded-full blur-[100px] opacity-20" />
-           
-           <div className="relative z-10 space-y-8">
-              <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md">
-                 <Sparkles size={16} className="text-[var(--accent-primary)] animate-pulse" />
-                 <span className="text-[10px] font-black uppercase tracking-[0.3em]">Knowledge Matrix</span>
-              </div>
-              
-              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
-                 <div className="space-y-4">
-                    <h1 className="text-5xl lg:text-7xl font-black tracking-tighter leading-none">
-                      Study <span className="text-[var(--accent-primary)]">Materials</span>
-                    </h1>
-                    <p className="text-xl text-blue-100/70 font-medium max-w-xl leading-relaxed">
-                      Advanced learning assets curated for <span className="text-white font-black underline decoration-[var(--accent-primary)] decoration-4 underline-offset-8">{data?.targetCareer || 'your roadmap'}</span>.
-                    </p>
-                 </div>
-                 
-                 <div className="relative w-full lg:w-[450px]">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40" size={20} />
-                    <input 
-                      type="text" 
-                      placeholder="Search neural database..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-white/10 border border-white/10 rounded-[2rem] py-5 pl-16 pr-8 text-white placeholder-white/40 focus:outline-none focus:bg-white/15 focus:border-white/20 transition-all backdrop-blur-xl text-sm font-medium"
-                    />
-                 </div>
-              </div>
-           </div>
-        </header>
+        <header className="space-y-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-3 text-text-tertiary hover:text-accent-primary transition-all text-[11px] font-black uppercase tracking-[0.3em] group"
+          >
+            <div className="p-2 bg-bg-surface rounded-xl border border-border-default group-hover:-translate-x-1 transition-transform shadow-sm">
+              <ChevronLeft size={16} />
+            </div>
+             Syllabus Overview
+          </button>
 
-        {/* NAVIGATION & FILTERING */}
-        <div className="flex flex-wrap items-center justify-between gap-6 px-2">
-           <div className="flex items-center gap-2">
-              <button 
-                onClick={() => setActiveCategory('All')}
-                className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                  activeCategory === 'All' ? 'bg-[#2774AE] text-white shadow-lg' : 'bg-white border border-[var(--border-default)] hover:bg-[var(--bg-subtle)]'
-                }`}
-              >
-                All Resources
-              </button>
-              {data?.categories?.map((cat, i) => (
-                <button 
-                  key={i}
-                  onClick={() => setActiveCategory(cat.categoryName)}
-                  className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    activeCategory === cat.categoryName ? 'bg-[#2774AE] text-white shadow-lg' : 'bg-white border border-[var(--border-default)] hover:bg-[var(--bg-subtle)]'
-                  }`}
-                >
-                  {cat.categoryName}
-                </button>
-              ))}
-           </div>
-           <div className="flex items-center gap-3 text-[10px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.2em]">
-              <Filter size={16} />
-              <span>Neural Filtering Active</span>
-           </div>
-        </div>
-
-        {/* ASSETS GRID */}
-        <div className="space-y-20">
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-               <SkeletonItem />
-               <SkeletonItem />
-               <SkeletonItem />
+            <div className="space-y-6">
+              <div className="h-4 w-32 bg-bg-subtle rounded-full animate-pulse" />
+              <div className="h-16 w-2/3 bg-bg-subtle rounded-[1.5rem] animate-pulse" />
+              <div className="h-6 w-1/2 bg-bg-subtle rounded-lg animate-pulse" />
             </div>
           ) : (
-            data?.categories?.filter(c => activeCategory === 'All' || c.categoryName === activeCategory).map((category, idx) => (
-              <section key={idx} className="space-y-10">
-                <div className="flex items-center gap-6 px-4">
-                  <div className="w-1.5 h-10 bg-[#2774AE] rounded-full shadow-lg shadow-[#2774AE]/20" />
-                  <div className="space-y-0.5">
-                    <h2 className="text-3xl font-black text-[#0F172A] tracking-tight">{category.categoryName}</h2>
-                    <p className="text-[10px] font-black text-[#64748B] uppercase tracking-[0.3em]">Curated Intelligence Cluster</p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col md:flex-row md:items-end justify-between gap-12"
+            >
+              <div className="space-y-6 flex-1">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-bg-surface border border-border-default shadow-sm">
+                    <Sparkles size={14} className="text-accent-primary animate-pulse" />
+                    <span className="text-[10px] font-black text-accent-primary uppercase tracking-[0.2em]">Module Overview</span>
                   </div>
-                  <div className="h-[1px] flex-1 bg-[var(--border-default)] mx-6 hidden md:block" />
+                  <button
+                    onClick={handleSaveToggle}
+                    disabled={saving}
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-sm ${
+                      isSaved 
+                        ? 'bg-bg-subtle border-accent-primary/20 text-accent-primary' 
+                        : 'bg-bg-surface border-border-default text-text-tertiary hover:text-accent-primary hover:border-accent-primary/30'
+                    }`}
+                  >
+                    <Bookmark size={12} className={isSaved ? 'fill-current' : ''} />
+                    <span>{isSaved ? 'Saved to Paths' : 'Save Career Path'}</span>
+                  </button>
                 </div>
+                <h1 className="text-5xl lg:text-7xl font-black text-text-primary tracking-tighter leading-[0.9]">
+                  {data?.moduleName}
+                </h1>
+                <p className="text-lg lg:text-xl text-text-secondary font-medium max-w-2xl leading-relaxed">
+                  Deep-dive architecture for <span className="text-accent-primary font-black italic">{targetCareer}</span>. Master these core topics to build your proficiency.
+                </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {category.materials?.filter(m => 
-                    m.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                    m.description.toLowerCase().includes(searchQuery.toLowerCase())
-                  ).map((material, midx) => (
-                    <motion.div
-                      key={midx}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -10 }}
-                      className="group relative bg-white border border-[var(--border-default)] rounded-[3rem] p-10 shadow-[0_4px_30px_rgba(0,0,0,0.02)] hover:border-[#2774AE]/30 hover:shadow-[0_30px_100px_rgba(0,0,0,0.05)] transition-all duration-700"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#EEF4F8] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-[3rem]" />
-                      
-                      <div className="relative z-10 space-y-8">
-                        <div className="flex justify-between items-start">
-                          <div className={`p-4 rounded-2xl border ${getTypeColor(material.type)} shadow-sm transition-all duration-500 group-hover:scale-110`}>
-                            {getTypeIcon(material.type)}
-                          </div>
-                          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[var(--border-default)] rounded-xl text-[10px] font-black uppercase tracking-widest text-[#64748B] shadow-sm">
-                            <Clock size={12} />
-                            {material.estimatedTime}
-                          </div>
-                        </div>
+                {totalTopicsCount > 0 && (
+                  <div className="space-y-2 max-w-2xl pt-2">
+                    <div className="flex justify-between text-xs font-bold text-text-secondary uppercase tracking-widest">
+                      <span>Module Completion Progress</span>
+                      <span>{progressPercentage}% ({completedTopicsCount}/{totalTopicsCount} Chapters)</span>
+                    </div>
+                    <div className="w-full bg-border-default h-3 rounded-full overflow-hidden border border-border-default/50 p-0.5">
+                      <div 
+                        className="bg-emerald-500 dark:bg-emerald-400 h-full rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(16,185,129,0.3)]" 
+                        style={{ width: `${progressPercentage}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                        <div className="space-y-4">
-                          <h3 className="text-2xl font-black text-[#0F172A] leading-tight group-hover:text-[#2774AE] transition-colors">
-                            {material.title}
-                          </h3>
-                          <p className="text-sm text-[#475569] font-medium leading-[1.8] line-clamp-3">
-                            {material.description}
-                          </p>
-                        </div>
+              <div className="flex items-center gap-6 bg-bg-surface border border-border-default p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.03)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.2)] shrink-0">
+                <div className="text-center px-4">
+                  <span className="block text-4xl font-black text-accent-primary tracking-tighter">{totalTopicsCount}</span>
+                  <span className="text-[10px] font-black text-text-tertiary uppercase tracking-widest">Chapters</span>
+                </div>
+                <div className="w-[1px] h-12 bg-border-default" />
+                <div className="text-center px-4">
+                  <span className="block text-4xl font-black text-text-primary tracking-tighter">
+                    {data?.topics?.reduce((acc, t) => {
+                      const time = parseInt(t.estimatedTime) || 30;
+                      return acc + time;
+                    }, 0)}m
+                  </span>
+                  <span className="text-[10px] font-black text-text-tertiary uppercase tracking-widest">Est. Duration</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </header>
 
-                        <div className="pt-6 border-t border-[var(--border-default)] flex items-center justify-between">
-                          <div className="flex flex-col">
-                            <span className="text-[9px] font-black text-[#64748B] uppercase tracking-[0.3em]">Resource Format</span>
-                            <span className="text-[10px] font-black text-[#002E5D] uppercase tracking-widest">{material.type}</span>
-                          </div>
-                          <a 
-                            href={material.link} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="px-6 py-3 bg-[#EEF4F8] text-[#2774AE] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#2774AE] hover:text-white transition-all shadow-sm flex items-center gap-2"
-                          >
-                            Launch
-                            <ExternalLink size={14} />
-                          </a>
+        {/* TOPICS WORKSPACE */}
+        <div className="space-y-8">
+          {loading ? (
+            <div className="space-y-8">
+              <SkeletonItem />
+              <SkeletonItem />
+              <SkeletonItem />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-8">
+              {data?.topics?.map((topic, idx) => {
+                const isTopicCompleted = topic.isCompleted || topic.IsCompleted;
+                return (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.1 }}
+                    whileHover={{ y: -5 }}
+                    className={`group relative bg-bg-surface border rounded-[3rem] p-10 lg:p-12 shadow-[0_4px_30px_rgba(0,0,0,0.02)] transition-all duration-700 ${
+                      isTopicCompleted 
+                        ? 'border-emerald-500/20 hover:border-emerald-500/40 hover:shadow-[0_30px_90px_rgba(16,185,129,0.04)]' 
+                        : 'border-border-default hover:border-accent-primary/30 hover:shadow-[0_30px_90px_rgba(39,116,174,0.04)] dark:hover:shadow-[0_30px_90px_rgba(0,0,0,0.3)]'
+                    }`}
+                  >
+                    <div className="absolute top-0 right-0 p-10 opacity-[0.015] group-hover:opacity-[0.03] transition-opacity pointer-events-none">
+                      <Zap size={200} />
+                    </div>
+
+                    <div className="flex flex-col lg:flex-row gap-12 relative z-10">
+                      <div className="shrink-0">
+                        <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center font-black text-2xl shadow-inner transition-all duration-500 ${
+                          isTopicCompleted 
+                            ? 'bg-emerald-500 border-emerald-500 text-white shadow-emerald-500/10' 
+                            : 'bg-bg-subtle border-accent-primary/10 text-accent-primary group-hover:bg-accent-primary group-hover:text-white'
+                        }`}>
+                          {isTopicCompleted ? <CheckCircle2 size={24} /> : idx + 1}
                         </div>
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </section>
-            ))
+
+                      <div className="flex-1 space-y-8">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${topic.difficulty === 'Beginner' ? 'bg-[#F0FDF4] text-[#10B981] dark:bg-emerald-950/20 dark:text-emerald-400' :
+                                topic.difficulty === 'Advanced' ? 'bg-[#FFF1F2] text-[#E11D48] dark:bg-rose-950/20 dark:text-rose-400' :
+                                  'bg-[#FFFBEB] text-[#D97706] dark:bg-amber-950/20 dark:text-amber-400'
+                                }`}>
+                                {topic.difficulty}
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[10px] font-bold text-text-tertiary uppercase tracking-widest">
+                                <Clock size={12} /> {topic.estimatedTime}
+                              </div>
+                              {isTopicCompleted && (
+                                <span className="px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full text-[9px] font-black uppercase tracking-widest">
+                                  Completed
+                                </span>
+                              )}
+                            </div>
+                            <h3 className={`text-3xl font-black tracking-tight transition-colors ${
+                              isTopicCompleted 
+                                ? 'text-text-primary group-hover:text-emerald-500' 
+                                : 'text-text-primary group-hover:text-accent-primary'
+                            }`}>
+                              {topic.title}
+                            </h3>
+                          </div>
+
+                          <button
+                            onClick={() => navigate(`/lessons/${roadmapId}/${moduleId}/${encodeURIComponent(topic.id || topic.title || idx)}?career=${encodeURIComponent(targetCareer || '')}&module=${encodeURIComponent(data?.moduleName || moduleName)}${savedMapId ? `&savedMapId=${savedMapId}` : ''}`)}
+                            className={`px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3 ${
+                              isTopicCompleted
+                                ? 'bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-500 dark:hover:bg-emerald-600 text-white shadow-emerald-500/20'
+                                : 'bg-accent-primary-hover dark:bg-accent-primary text-white hover:bg-accent-primary dark:hover:bg-accent-primary-hover shadow-accent-primary/20'
+                            }`}
+                          >
+                            {isTopicCompleted ? 'Review Lesson' : 'Start Lesson'}
+                            <ChevronRight size={18} />
+                          </button>
+                        </div>
+
+                        <p className="text-lg text-text-secondary font-medium leading-relaxed max-w-3xl">
+                          {topic.description}
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {topic.keyTakeaways?.map((takeaway, tidx) => (
+                            <div key={tidx} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-bg-base border border-border-default group/takeaway hover:bg-bg-surface hover:border-accent-primary/20 transition-all">
+                              <div className="p-1.5 bg-bg-surface rounded-lg border border-border-default group-hover/takeaway:text-accent-primary group-hover/takeaway:border-accent-primary/30 transition-all">
+                                <CheckCircle2 size={16} className="shrink-0" />
+                              </div>
+                              <span className="text-xs font-bold text-text-secondary">{takeaway}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           )}
         </div>
 
-        {/* CUSTOM REQUEST BANNER */}
-        {!loading && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="p-12 lg:p-20 rounded-[4rem] bg-[#2774AE] relative overflow-hidden shadow-[0_50px_120px_rgba(39,116,174,0.3)] text-center lg:text-left"
-          >
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
-              <div className="space-y-6">
-                 <div className="w-20 h-20 bg-white/10 rounded-[2rem] border border-white/20 flex items-center justify-center text-white shadow-inner">
-                    <Sparkles size={40} />
-                 </div>
-                 <div className="space-y-3">
-                   <h2 className="text-4xl lg:text-5xl font-black text-white tracking-tighter">Missing a specific asset?</h2>
-                   <p className="text-blue-50 text-xl font-medium max-w-2xl opacity-90 leading-relaxed">
-                     Our AI Mentor can synthesize a custom deep-dive guide or find specific documentation for any tool in the <span className="text-white font-black underline decoration-white/30 decoration-4 underline-offset-8">{data?.targetCareer}</span> stack.
-                   </p>
-                 </div>
-              </div>
-              <button className="px-12 py-6 bg-white text-[#2774AE] rounded-[2.5rem] font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 group">
-                TALK TO NEXUS AI
-                <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </motion.div>
-        )}
+
       </div>
     </div>
   );

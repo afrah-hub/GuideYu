@@ -152,25 +152,7 @@ const adminService = {
     return handleResponse(res);
   },
 
-  // AI Settings
-  getTemplates: async () => {
-    const res = await apiFetch(`${API_URL}/admin/aisettings/templates`);
-    return handleResponse(res);
-  },
-  createTemplate: async (data) => {
-    const res = await apiFetch(`${API_URL}/admin/aisettings/templates`, {
-      method: 'POST',
-      body: JSON.stringify(data)
-    });
-    return handleResponse(res);
-  },
-  updateTemplate: async (id, data) => {
-    const res = await apiFetch(`${API_URL}/admin/aisettings/templates/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    });
-    return handleResponse(res);
-  },
+
 };
 
 export default adminService;

@@ -1,14 +1,38 @@
 import React from 'react';
 import { ChevronRight, Target } from 'lucide-react';
-
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const NextStepsPanel = ({ data, loading }) => {
+const NextStepsPanel = ({ data, overview, nextSteps, loading }) => {
+  const navigate = useNavigate();
+
   if (loading) {
     return <div className="h-[250px] bg-[var(--bg-overlay)] rounded-[32px] animate-pulse" />;
   }
 
-  const currentGoal = data?.currentGoal;
+  // Resolve currentGoal dynamically from overview data, next steps array, or legacy data object
+  let currentGoal = null;
+  if (overview && overview.targetRole && overview.targetRole !== "Your Dream Role") {
+    const primaryNextStep = nextSteps?.find(step => step.isPrimary || step.IsPrimary) || nextSteps?.[0];
+    const nextStepText = primaryNextStep
+      ? (primaryNextStep.missingSkills?.[0] || primaryNextStep.MissingSkills?.[0] || `Learn ${overview.targetRole} concepts`)
+      : `Complete your next learning module for ${overview.targetRole}`;
+
+    currentGoal = {
+      title: overview.targetRole,
+      progress: overview.pathProgress || 0,
+      nextStep: nextStepText
+    };
+  } else if (data?.currentGoal) {
+    currentGoal = data.currentGoal;
+  } else if (Array.isArray(data) && data.length > 0) {
+    const primaryNextStep = data.find(step => step.isPrimary || step.IsPrimary) || data[0];
+    currentGoal = {
+      title: primaryNextStep.title || primaryNextStep.Title || "Your Selected Career",
+      progress: primaryNextStep.score || 0,
+      nextStep: primaryNextStep.missingSkills?.[0] || primaryNextStep.MissingSkills?.[0] || "Continue Learning"
+    };
+  }
 
   if (!currentGoal) {
     return (
@@ -17,10 +41,13 @@ const NextStepsPanel = ({ data, loading }) => {
           <Target size={32} />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">No Active Objective</h3>
+          <h3 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">No Active Goal</h3>
           <p className="text-[var(--text-tertiary)] text-sm max-w-xs mt-2 mx-auto">Set a target career in the Explore section to begin your journey.</p>
         </div>
-        <button className="px-6 py-3 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-primary)] rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-md">
+        <button 
+          onClick={() => navigate('/explore-careers')}
+          className="px-6 py-3 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-primary)] rounded-full font-bold text-xs uppercase tracking-widest transition-all shadow-md"
+        >
           Browse Careers
         </button>
       </div>
@@ -31,26 +58,26 @@ const NextStepsPanel = ({ data, loading }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="p-10 rounded-[40px] bg-[var(--bg-surface)] border border-[var(--border-default)] backdrop-blur-3xl shadow-sm space-y-10 group"
+      className="p-5 md:p-10 rounded-[28px] md:rounded-[40px] bg-[var(--bg-surface)] border border-[var(--border-default)] backdrop-blur-3xl shadow-sm space-y-6 md:space-y-10 group"
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
-            <span className="text-[11px] font-black text-[var(--text-accent)] uppercase tracking-[0.4em]">Active Objective</span>
+            <span className="text-[11px] font-black text-[var(--text-accent)] uppercase tracking-[0.4em]">Active Goal</span>
           </div>
-          <h3 className="text-3xl font-black text-[var(--text-primary)] leading-tight tracking-tighter">{currentGoal.title}</h3>
+          <h3 className="text-xl md:text-3xl font-black text-[var(--text-primary)] leading-tight tracking-tighter">{currentGoal.title}</h3>
         </div>
-        <div className="w-16 h-16 rounded-[24px] bg-[var(--bg-subtle)] border border-[var(--border-faint)] text-[var(--text-accent)] flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-sm">
-          <Target size={32} />
+        <div className="w-12 h-12 md:w-16 md:h-16 rounded-[18px] md:rounded-[24px] bg-[var(--bg-subtle)] border border-[var(--border-faint)] text-[var(--text-accent)] flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-sm">
+          <Target size={24} />
         </div>
       </div>
 
       <div className="space-y-4">
         <div className="flex justify-between items-end">
-          <span className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.3em]">Synchronizing Path</span>
+          <span className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.3em]">Learning Progress</span>
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-black text-[var(--text-primary)]">{currentGoal.progress}</span>
+            <span className="text-xl md:text-3xl font-black text-[var(--text-primary)]">{currentGoal.progress}</span>
             <span className="text-sm font-bold text-[var(--text-accent)]">%</span>
           </div>
         </div>
@@ -70,9 +97,10 @@ const NextStepsPanel = ({ data, loading }) => {
         <p className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.3em] mb-4">Critical Next Action</p>
         <motion.div
           whileHover={{ x: 5, scale: 1.01 }}
+          onClick={() => navigate('/career-path')}
           className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-[24px] p-6 flex items-center justify-between group cursor-pointer transition-all shadow-sm"
         >
-          <span className="text-[17px] font-semibold text-[var(--text-primary)] tracking-tight">{currentGoal.nextStep}</span>
+          <span className="text-sm md:text-[17px] font-semibold text-[var(--text-primary)] tracking-tight">{currentGoal.nextStep}</span>
           <div className="w-10 h-10 rounded-full bg-[var(--bg-overlay)] flex items-center justify-center text-[var(--text-accent)] group-hover:bg-[var(--accent-primary)] group-hover:text-[var(--text-primary)] transition-all">
             <ChevronRight size={20} />
           </div>

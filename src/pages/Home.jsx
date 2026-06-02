@@ -70,7 +70,7 @@ const Home = () => {
           >
             <span className="text-[12px] font-extrabold text-[var(--text-accent)] uppercase tracking-[0.2em] flex items-center gap-2">
               <Compass size={14} className="text-[var(--text-accent)]" />
-              AI-Powered Career Intelligence
+              AI-Powered Career Guidance
             </span>
           </motion.div>
 
@@ -100,7 +100,7 @@ const Home = () => {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="text-lg md:text-xl text-[var(--text-secondary)] mb-12 max-w-2xl font-medium leading-relaxed"
           >
-            Stop guessing your future. Our <span className="text-[var(--text-accent)] font-bold">quantum neural engine</span> analyzes your professional DNA to precision-guide your next move.
+            Take control of your professional future. Our <span className="text-[var(--text-accent)] font-bold">intelligent guidance engine</span> analyzes your skills and aspirations to personalize your next career move.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -127,7 +127,7 @@ const Home = () => {
             <div className="flex -space-x-3">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="w-9 h-9 rounded-full border-2 border-[var(--bg-surface)]  bg-[var(--bg-subtle)] overflow-hidden shadow-sm">
-                  <img src={`https://i.pravatar.cc/100?img=${i + 15}`} alt="User" className="w-full h-full object-cover" />
+                  <img src={`https://i.pravatar.cc/100?img=${i + 15}`} alt="User" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               ))}
             </div>
@@ -200,7 +200,7 @@ const Home = () => {
                 <div className="w-14 h-14 rounded-2xl bg-[var(--bg-surface)]  flex items-center justify-center text-[var(--text-accent)] dark:text-[var(--accent-primary)] shadow-inner">
                   <Brain size={28} />
                 </div>
-                <h4 className="font-extrabold text-slate-950 dark:text-[var(--text-primary)] text-xl tracking-tight">Neural Match</h4>
+                <h4 className="font-extrabold text-slate-950 dark:text-[var(--text-primary)] text-xl tracking-tight">Skill Compatibility</h4>
               </div>
               <div className="text-[var(--text-accent)] dark:text-[var(--accent-primary)] font-black text-5xl">98%</div>
             </div>
@@ -295,11 +295,11 @@ const Home = () => {
             className="mb-20"
           >
             <div className="flex flex-col items-center gap-4 mb-8">
-              <span className="text-[12px] font-black uppercase tracking-[0.4em] text-[var(--text-accent)] dark:text-[var(--accent-primary)]">✨ Innovate Your Career</span>
+              <span className="text-[12px] font-black uppercase tracking-[0.4em] text-[var(--text-accent)] dark:text-[var(--accent-primary)]">✨ Core Features</span>
               <div className="w-12 h-1 bg-[var(--accent-primary)] rounded-full" />
             </div>
-            <h3 className="text-4xl sm:text-5xl md:text-7xl font-black text-[var(--text-primary)] tracking-tighter mb-8 font-poppins leading-tight">              Decode Your <br />
-              <span className="text-[var(--text-accent)]">Career Matrix.</span>
+            <h3 className="text-4xl sm:text-5xl md:text-7xl font-black text-[var(--text-primary)] tracking-tighter mb-8 font-poppins leading-tight">              Unlock Your <br />
+              <span className="text-[var(--text-accent)]">Career Potential.</span>
             </h3>
           </motion.div>
           <div className="flex justify-center items-center">
@@ -317,13 +317,13 @@ const Home = () => {
             viewport={{ once: true }}
             className="mb-28 md:mb-40 text-center"
           >
-            <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[var(--text-accent)] dark:text-[var(--accent-primary)] mb-8">The Process</h2>
+            <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[var(--text-accent)] dark:text-[var(--accent-primary)] mb-8">How it works</h2>
             <h3 className="text-4xl sm:text-6xl md:text-7xl font-black text-[var(--text-primary)] tracking-tighter leading-[1.05] mb-8 font-poppins">
-              The Path to <br />
-              <span className="text-[var(--text-accent)]">Intelligent Growth.</span>
+              Your Personalized <br />
+              <span className="text-[var(--text-accent)]">Growth Strategy.</span>
             </h3>
             <p className="text-lg md:text-2xl text-[var(--text-secondary)] font-semibold max-w-3xl mx-auto leading-relaxed">
-              Experience a career guide as advanced as the roles you're chasing.
+              Achieve your career goals with a clear, step-by-step development plan.
             </p>
           </motion.div>
 
@@ -343,8 +343,8 @@ const Home = () => {
                 {[
                   {
                     step: "01",
-                    title: "Skill DNA Analysis",
-                    desc: "We scan your deep technical skills and behavioral traits to create a unique career fingerprint.",
+                    title: "Skill Profile Analysis",
+                    desc: "We analyze your current technical skills, experience, and interests to establish a solid baseline.",
                     icon: <Fingerprint size={32} />,
                     color: "text-[var(--text-accent)]",
                     bg: "bg-blue-100/30 ",
@@ -352,8 +352,8 @@ const Home = () => {
                   },
                   {
                     step: "02",
-                    title: "Neural Pathing",
-                    desc: "Our AI simulates millions of career trajectories to find the one with the highest success probability.",
+                    title: "Target Career Mapping",
+                    desc: "Our intelligent matching recommends structured pathways tailored to the career goals you select.",
                     icon: <Network size={32} />,
                     color: "text-[var(--text-accent)]",
                     bg: "bg-blue-100/30 ",
@@ -361,8 +361,8 @@ const Home = () => {
                   },
                   {
                     step: "03",
-                    title: "Dynamic Roadmap",
-                    desc: "Receive an interactive, living roadmap that adjusts in real-time as you gain new skills.",
+                    title: "Personalized Roadmap",
+                    desc: "Receive a step-by-step roadmap that dynamically updates as you complete key modules.",
                     icon: <Route size={32} />,
                     color: "text-[var(--text-accent)]",
                     bg: "bg-blue-100/30 ",
@@ -370,8 +370,8 @@ const Home = () => {
                   },
                   {
                     step: "04",
-                    title: "Strategic Advisory",
-                    desc: "Continuous AI guidance ensures you're always making the most impactful career decisions.",
+                    title: "Continuous Progress Tracking",
+                    desc: "Get insights and targeted practice recommendations to ensure you stay on track to success.",
                     icon: <Brain size={32} />,
                     color: "text-[var(--text-accent)]",
                     bg: "bg-blue-100/30 ",
@@ -426,7 +426,7 @@ const Home = () => {
             transition={{ delay: 0.2 }}
             className="text-lg sm:text-xl text-[var(--text-secondary)] mb-10 sm:mb-12 max-w-2xl mx-auto relative z-10 font-semibold leading-relaxed"
           >
-            Join thousands of professionals who have already accelerated their career trajectory using <span className="text-[var(--text-accent)] dark:text-[var(--accent-primary)] font-extrabold">GuideYu.</span>
+            Join professionals who are building in-demand skills and achieving their career goals using <span className="text-[var(--text-accent)] dark:text-[var(--accent-primary)] font-extrabold">GuideYu.</span>
           </motion.p>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-5 relative z-10">
@@ -447,31 +447,31 @@ const BookFeatureShowcase = () => {
   const features = [
     {
       title: "Career Recommendations",
-      desc: "Our neural engine analyzes global market trends and your unique profile to recommend high-impact trajectories.",
+      desc: "Receive personalized suggestions for high-growth fields that align with your professional background.",
       icon: <Compass size={48} className="text-blue-950" />,
       accent: "from-blue-950 to-blue-900"
     },
     {
       title: "Skill Gap Analysis",
-      desc: "Identify exactly which technical and soft skills are standing between you and your next big promotion.",
+      desc: "Identify the exact skills and technical modules required to qualify for your target role.",
       icon: <Brain size={48} className="text-blue-950" />,
       accent: "from-blue-950 to-indigo-950"
     },
     {
       title: "Learning Path",
-      desc: "Receive customized roadmaps with specific resources to master the skills your career journey demands.",
+      desc: "Access structured, step-by-step modules designed to guide you through key industry topics.",
       icon: <BookMarked size={48} className="text-blue-950" />,
       accent: "from-blue-950 to-slate-900"
     },
     {
       title: "Dashboard Insights",
-      desc: "Real-time tracking of your growth, market value, and compatibility across various industry sectors.",
+      desc: "Track your learning progress, completed milestones, and overall preparation level in real time.",
       icon: <LayoutList size={48} className="text-blue-950" />,
       accent: "from-blue-950 to-blue-800"
     },
     {
       title: "Profile Management",
-      desc: "Sync your portfolio, certifications, and experience into a unified, AI-optimized professional identity.",
+      desc: "Consolidate your certifications, completed roadmaps, and career targets into a single profile.",
       icon: <UserPlus size={48} className="text-blue-950" />,
       accent: "from-blue-950 to-blue-900"
     }

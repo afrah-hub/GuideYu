@@ -34,7 +34,7 @@ const LoginSuccess = () => {
         
         <h1 className="text-3xl font-black text-[var(--text-primary)]  mb-2 relative z-10 tracking-tight">Login Successful!</h1>
         <p className="text-[var(--text-secondary)]  font-medium relative z-10">
-          Syncing your neural profile...
+          Loading your profile...
         </p>
       </motion.div>
     </div>

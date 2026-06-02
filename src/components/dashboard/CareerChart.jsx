@@ -17,7 +17,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="bg-[var(--bg-surface)]  border border-[var(--border-default)]  p-4 rounded-2xl shadow-2xl backdrop-blur-xl">
         <p className="text-[10px] font-black text-[var(--text-tertiary)] uppercase tracking-widest mb-2">{label}</p>
         <p className="text-xl font-black text-[var(--accent-primary)] tracking-tighter">
-          {payload[0].value}% <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-widest ml-1">Velocity</span>
+          {payload[0].value}% <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-widest ml-1">Growth</span>
         </p>
       </div>
     );
@@ -27,7 +27,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const CareerChart = ({ data, loading }) => {
   if (loading) {
-    return <div className="h-[450px] bg-[var(--bg-subtle)] /5 animate-pulse rounded-[2.5rem]" />;
+    return <div className="h-[250px] md:h-[450px] bg-[var(--bg-subtle)] /5 animate-pulse rounded-[2rem] md:rounded-[2.5rem]" />;
   }
 
   return (
@@ -36,7 +36,7 @@ const CareerChart = ({ data, loading }) => {
         <div className="w-1.5 h-6 bg-[var(--accent-primary)] rounded-full" />
         <h3 className="text-xs font-black text-[var(--text-primary)]  uppercase tracking-[0.3em]">Career Growth Momentum</h3>
       </div>
-      <div className="h-[400px] w-full p-8 bg-[var(--bg-surface)]  border border-[var(--border-default)]  rounded-[2.5rem] shadow-sm relative overflow-hidden group">
+      <div className="h-[250px] sm:h-[320px] md:h-[400px] w-full p-4 md:p-8 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-[2rem] md:rounded-[2.5rem] shadow-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent-primary)]/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>

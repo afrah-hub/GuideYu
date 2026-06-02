@@ -78,12 +78,12 @@ const AdminModules = () => {
     <div className="space-y-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-display font-black text-text-primary tracking-tight">Sequence Architect</h1>
+          <h1 className="text-2xl md:text-4xl font-display font-black text-text-primary tracking-tight">Sequence Architect</h1>
           <p className="text-text-tertiary font-medium mt-1">Orchestrate the logical flow of knowledge modules</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-1 bg-bg-surface/10 rounded-[32px] border border-border-default/50 backdrop-blur-md">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 p-1 bg-bg-surface/10 rounded-[24px] md:rounded-[32px] border border-border-default/50 backdrop-blur-md">
         <div className="p-6 space-y-3">
           <label className="text-[10px] font-black text-text-tertiary uppercase tracking-[0.2em] ml-1">Target Sector</label>
           <select 
@@ -112,7 +112,7 @@ const AdminModules = () => {
           <Layers className="w-4 h-4 text-accent-primary" />
           Module Hierarchy
         </h3>
-        <button className="btn-primary h-10 px-5 rounded-xl flex items-center gap-2 shadow-[0_8px_20px_-4px_rgba(39,116,174,0.4)]">
+        <button className="btn-primary h-10 px-4 md:px-5 rounded-xl flex items-center gap-2 shadow-[0_8px_20px_-4px_rgba(249,115,22,0.3)]">
           <Plus className="w-4 h-4" />
           <span className="font-black uppercase tracking-widest text-[10px]">Add Component</span>
         </button>
@@ -132,7 +132,7 @@ const AdminModules = () => {
                 {index + 1}
               </div>
               <div className="flex-1">
-                <h4 className="text-lg font-black text-text-primary tracking-tight group-hover:text-accent-primary transition-colors">{module.title}</h4>
+                <h4 className="text-base md:text-lg font-black text-text-primary tracking-tight group-hover:text-accent-primary transition-colors">{module.title}</h4>
                 <p className="text-[10px] font-black text-text-tertiary uppercase tracking-[0.15em] mt-1">Component Payload: {module.topics?.length || 0} Nodes</p>
               </div>
               <div className={`p-2 rounded-xl transition-all duration-300 ${expandedModules[module.id] ? 'bg-accent-primary text-white rotate-180' : 'bg-bg-subtle/50 text-text-tertiary'}`}>

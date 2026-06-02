@@ -23,7 +23,7 @@ const FooterComponent = () => {
               </div>
             </Link>
             <p className="text-[var(--text-tertiary)]  font-medium mb-8 max-w-sm leading-relaxed">
-              Pioneering the next era of intelligent career navigation. Powered by quantum neural models to precision-guide your professional future.
+              Pioneering the next era of intelligent career navigation. Powered by AI to precision-guide your professional future.
             </p>
 
             {/* Social Glass Icons */}

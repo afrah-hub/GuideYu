@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Core Design Tokens mapped to CSS variables for dynamic switching */
   --color-bg-base: var(--bg-base);
@@ -449,4 +451,218 @@
   padding: 8px;
   min-width: 220px;
   animation: slideDown 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================
+   Premium Admin Orange Theme Overrides
+   ========================================== */
+.admin-theme {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Light Theme Variables */
+.admin-theme.admin-light {
+  --bg-base: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-sidebar: #FFF7ED; /* Warm light sidebar as requested */
+  --bg-subtle: #F1F5F9;
+  --bg-overlay: rgba(249, 115, 22, 0.04);
+  --bg-elevated: #FFFFFF;
+
+  --border-default: #E2E8F0;
+  --border-faint: rgba(226, 232, 240, 0.5);
+  --border-strong: rgba(15, 23, 42, 0.08);
+
+  --accent-primary: #F97316;
+  --accent-primary-hover: #EA580C;
+  --accent-primary-subtle: rgba(249, 115, 22, 0.08);
+  --accent-primary-glow: rgba(249, 115, 22, 0.25);
+
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-tertiary: #64748B;
+  --text-accent: #F97316;
+
+  --color-success: #10B981;
+  --color-success-subtle: rgba(16, 185, 129, 0.1);
+  --color-warning: #F59E0B;
+  --color-warning-subtle: rgba(245, 158, 11, 0.1);
+  --color-danger: #EF4444;
+  --color-danger-subtle: rgba(239, 68, 68, 0.1);
+
+  --gradient-brand: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  --gradient-subtle: linear-gradient(180deg, rgba(249, 115, 22, 0.01) 0%, transparent 100%);
+
+  /* Tailwind v4 CSS variable overrides for absolute runtime resolution */
+  --color-bg-base: #F8FAFC;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-subtle: #F1F5F9;
+  --color-bg-overlay: rgba(249, 115, 22, 0.04);
+  --color-bg-elevated: #FFFFFF;
+
+  --color-border-default: #E2E8F0;
+  --color-border-faint: rgba(226, 232, 240, 0.5);
+  --color-border-strong: rgba(15, 23, 42, 0.08);
+
+  --color-accent-primary: #F97316;
+  --color-accent-primary-hover: #EA580C;
+  --color-accent-primary-subtle: rgba(249, 115, 22, 0.08);
+  --color-accent-primary-glow: rgba(249, 115, 22, 0.25);
+
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #64748B;
+  --color-text-tertiary: #64748B;
+  --color-text-accent: #F97316;
+
+  /* Sidebar Premium Light Tokens */
+  --sidebar-text-active: #F97316;
+  --sidebar-text-inactive: #64748B;
+  --sidebar-text-hover: #F97316;
+  --sidebar-item-active-bg: rgba(249, 115, 22, 0.08);
+  --sidebar-item-hover-bg: rgba(249, 115, 22, 0.03);
+  --sidebar-item-active-border: rgba(249, 115, 22, 0.2);
+  --sidebar-brand-text: #0F172A;
+  --sidebar-brand-sub: #F97316;
+  --sidebar-profile-bg: rgba(249, 115, 22, 0.04);
+  --sidebar-profile-border: rgba(249, 115, 22, 0.1);
+  --sidebar-profile-text: #0F172A;
+}
+
+/* Dark Theme Variables */
+.admin-theme.admin-dark {
+  --bg-base: #020617;
+  --bg-surface: #1E293B;
+  --bg-sidebar: #111827; /* Dark sidebar as requested */
+  --bg-subtle: #0F172A;
+  --bg-overlay: rgba(249, 115, 22, 0.06);
+  --bg-elevated: #1E293B;
+
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-faint: rgba(255, 255, 255, 0.04);
+  --border-strong: rgba(255, 255, 255, 0.12);
+
+  --accent-primary: #F97316;
+  --accent-primary-hover: #FB923C;
+  --accent-primary-subtle: rgba(249, 115, 22, 0.12);
+  --accent-primary-glow: rgba(249, 115, 22, 0.4);
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-tertiary: #94A3B8;
+  --text-accent: #F97316;
+
+  --color-success: #10B981;
+  --color-success-subtle: rgba(16, 185, 129, 0.15);
+  --color-warning: #F59E0B;
+  --color-warning-subtle: rgba(245, 158, 11, 0.15);
+  --color-danger: #EF4444;
+  --color-danger-subtle: rgba(239, 68, 68, 0.15);
+
+  --gradient-brand: linear-gradient(135deg, #F97316 0%, #FB923C 100%);
+  --gradient-subtle: linear-gradient(180deg, rgba(249, 115, 22, 0.03) 0%, transparent 100%);
+
+  /* Tailwind v4 CSS variable overrides for absolute runtime resolution */
+  --color-bg-base: #020617;
+  --color-bg-surface: #1E293B;
+  --color-bg-subtle: #0F172A;
+  --color-bg-overlay: rgba(249, 115, 22, 0.06);
+  --color-bg-elevated: #1E293B;
+
+  --color-border-default: rgba(255, 255, 255, 0.08);
+  --color-border-faint: rgba(255, 255, 255, 0.04);
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+
+  --color-accent-primary: #F97316;
+  --color-accent-primary-hover: #FB923C;
+  --color-accent-primary-subtle: rgba(249, 115, 22, 0.12);
+  --color-accent-primary-glow: rgba(249, 115, 22, 0.4);
+
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-tertiary: #94A3B8;
+  --color-text-accent: #F97316;
+
+  /* Sidebar Premium Dark Tokens */
+  --sidebar-text-active: #F8FAFC;
+  --sidebar-text-inactive: #94A3B8;
+  --sidebar-text-hover: #F8FAFC;
+  --sidebar-item-active-bg: rgba(249, 115, 22, 0.15);
+  --sidebar-item-hover-bg: rgba(255, 255, 255, 0.04);
+  --sidebar-item-active-border: rgba(249, 115, 22, 0.3);
+  --sidebar-brand-text: #FFFFFF;
+  --sidebar-brand-sub: #F97316;
+  --sidebar-profile-bg: rgba(255, 255, 255, 0.02);
+  --sidebar-profile-border: rgba(255, 255, 255, 0.08);
+  --sidebar-profile-text: #FFFFFF;
+}
+
+/* Mesh gradient light theme */
+.admin-theme.admin-light.mesh-gradient-theme {
+  background-color: #F8FAFC;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(251, 146, 60, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.06) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.03) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Mesh gradient dark theme */
+.admin-theme.admin-dark.mesh-gradient-theme {
+  background-color: #020617;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(251, 146, 60, 0.06) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.08) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Button & component overrides within the admin theme */
+.admin-theme .btn-primary {
+  background: var(--gradient-brand) !important;
+  box-shadow: 0 4px 14px var(--accent-primary-subtle) !important;
+  border-radius: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.admin-theme .btn-primary:hover {
+  background: var(--accent-primary-hover) !important;
+  box-shadow: 0 8px 24px var(--accent-primary-glow) !important;
+  transform: translateY(-2px) !important;
+}
+
+.admin-theme .input:focus {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 3px var(--accent-primary-subtle) !important;
+}
+
+.admin-theme .badge-indigo {
+  background: var(--accent-primary-subtle) !important;
+  color: var(--accent-primary) !important;
+  border: 1px solid rgba(249, 115, 22, 0.2) !important;
+}
+
+.admin-theme .card:hover {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 12px 24px -8px var(--accent-primary-subtle) !important;
+}
+
+/* Glass panel overrides for admin light and dark themes */
+.admin-light .glass-panel {
+  background: var(--bg-surface) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: 32px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.01) !important;
+}
+
+.admin-dark .glass-panel {
+  background: var(--bg-surface) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: 32px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
 }

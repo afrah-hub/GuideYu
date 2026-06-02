@@ -19,9 +19,9 @@ const GoogleIcon = () => (
 const InteractiveVisuals = () => {
   const [currentFeature, setCurrentFeature] = useState(0);
   const features = [
-    { title: "Quantum Analysis", desc: "AI maps your professional DNA to perfect real-world roles." },
+    { title: "Skill Analysis", desc: "AI maps your skills and experience to find the perfect real-world roles." },
     { title: "Market Intelligence", desc: "Real-time industry insights power your next career leap." },
-    { title: "Neural Sync", desc: "Automatically match your skills with top global opportunities." }
+    { title: "Career Alignment", desc: "Automatically match your skills with the best industry opportunities." }
   ];
 
   useEffect(() => {
@@ -100,8 +100,11 @@ const Login = () => {
   useEffect(() => {
     if (user) {
       const userRole = user.role || user.Role;
+      const careerGoal = user.careerGoal || user.CareerGoal;
       if (userRole === 'Admin') {
         navigate('/admin/dashboard');
+      } else if (!careerGoal) {
+        navigate('/profile-setup');
       } else {
         navigate('/dashboard');
       }
@@ -188,7 +191,7 @@ const Login = () => {
               <h1 className="text-3xl sm:text-4xl font-black text-[var(--text-primary)]  tracking-tighter mb-2 font-poppins">
                 Welcome <span className="text-[var(--text-accent)]       drop-shadow-[0_0_30px_rgba(0,93,195,0.3)]">Back.</span>
               </h1>
-              <p className="text-slate-400  font-bold text-[10px] uppercase tracking-[0.3em]">Neural Interface Online</p>
+              <p className="text-slate-400  font-bold text-[10px] uppercase tracking-[0.3em]">Secure Access Online</p>
             </div>
 
             {error && (

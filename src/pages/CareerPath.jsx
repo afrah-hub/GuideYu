@@ -119,54 +119,44 @@ const CareerPath = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-2xl p-4 px-6 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-md shadow-sm"
+          className="bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-2xl p-4 px-4 md:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 backdrop-blur-md shadow-sm"
         >
-          <div>
-            <h3 className="text-base font-black text-[var(--text-primary)] tracking-tight flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-pulse" />
-              Analyzing: {targetCareer}
+          <div className="min-w-0">
+            <h3 className="text-sm md:text-base font-black text-[var(--text-primary)] tracking-tight flex items-center gap-2">
+              <span className="w-2 h-2 shrink-0 rounded-full bg-[var(--accent-primary)] animate-pulse" />
+              <span className="truncate">Analyzing: {targetCareer}</span>
             </h3>
-            <p className="text-[var(--text-secondary)] text-xs font-medium mt-0.5 ml-4">This is an AI-generated preview. Save this trajectory to make it your active goal.</p>
+            <p className="text-[var(--text-secondary)] text-xs font-medium mt-0.5 ml-4">AI-generated preview. Save to make it your active goal.</p>
           </div>
           <button
             onClick={handleSavePath}
             disabled={saving || saved}
-            className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shrink-0 ${saved
+            className={`px-5 md:px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shrink-0 w-full sm:w-auto ${saved
                 ? 'bg-[var(--color-success)] text-white shadow-sm'
                 : 'bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-white shadow-sm shadow-[var(--accent-primary-subtle)] hover:scale-105 active:scale-95'
               }`}
           >
             {saving ? (
-              <>
-                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Saving...
-              </>
+              <><div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />Saving...</>
             ) : saved ? (
-              <>
-                <CheckCircle size={16} />
-                Path Saved
-              </>
+              <><CheckCircle size={16} />Path Saved</>
             ) : (
-              <>
-                <Save size={16} />
-                Save Trajectory
-              </>
+              <><Save size={16} />Save Career Path</>
             )}
           </button>
         </motion.div>
       )}
 
-      <div className="space-y-12">
+      <div className="space-y-8 md:space-y-12">
         {/* 1. Summary Section */}
         <PathSummary
           summary={data?.summary}
           loading={loading}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-12 items-start">
           {/* LEFT COLUMN (70%) */}
-          <div className="lg:col-span-8 space-y-16">
-            {/* 2. Journey Visualization */}
+          <div className="lg:col-span-8 space-y-10 md:space-y-16">
             <PathJourney
               journey={data?.journey}
               loading={loading}
@@ -174,8 +164,7 @@ const CareerPath = () => {
           </div>
 
           {/* RIGHT COLUMN (30%) */}
-          <div className="lg:col-span-4 space-y-12">
-            {/* 5 & 6. Insights & Actions */}
+          <div className="lg:col-span-4 space-y-8 md:space-y-12">
             <CareerPathInsights
               insights={data?.insights || []}
               loading={loading}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  User, GraduationCap, Briefcase, Wrench, Lock, Camera, 
-  CheckCircle2, Mail, Shield, Save, ArrowLeft, Target, 
+import {
+  User, GraduationCap, Briefcase, Wrench, Lock, Camera,
+  CheckCircle2, Mail, Shield, Save, ArrowLeft, Target,
   Cpu, ChevronRight, Globe, Activity, Eye, EyeOff, AlertTriangle, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -15,7 +15,9 @@ const ProfileSettings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteReason, setDeleteReason] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -163,20 +165,20 @@ const ProfileSettings = () => {
   ];
 
   if (isLoading) {
-    return <div className="max-w-4xl mx-auto py-20 skeleton rounded-2xl h-96" />;
+    return <div className="max-w-4xl mx-auto py-10 md:py-20 skeleton rounded-2xl h-64 md:h-96" />;
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-20">
+    <div className="max-w-4xl mx-auto space-y-5 md:space-y-8 pb-20">
       {/* Header / Hero */}
-      <div className="card flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-6">
-          <div className="relative group">
+      <div className="card flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
+          <div className="relative group shrink-0">
             <input type="file" id="avatar-upload" className="hidden" accept="image/*" onChange={handleImageUpload} />
             <label htmlFor="avatar-upload" className="relative block cursor-pointer">
-              <div className="w-24 h-24 rounded-2xl bg-[var(--bg-overlay)] border-2 border-[var(--border-default)] overflow-hidden flex items-center justify-center group-hover:border-[var(--accent-primary)] transition-all">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-[var(--bg-overlay)] border-2 border-[var(--border-default)] overflow-hidden flex items-center justify-center group-hover:border-[var(--accent-primary)] transition-all">
                 {formData.profileImageUrl ? (
-                  <img src={formData.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                  <img src={formData.profileImageUrl} alt="Profile" className="w-full h-full object-cover" loading="lazy" />
                 ) : (
                   <span className="text-3xl font-bold text-[var(--accent-primary)]">{formData.fullName?.charAt(0)}</span>
                 )}
@@ -186,39 +188,40 @@ const ProfileSettings = () => {
               </div>
             </label>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">{formData.fullName}</h1>
-            <div className="flex items-center gap-3 text-[var(--text-secondary)] text-sm">
-              <span className="flex items-center gap-1.5"><Mail size={14} /> {formData.email}</span>
+          <div className="text-center sm:text-left">
+            <h1 className="text-xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1 truncate max-w-[240px] sm:max-w-none">{formData.fullName}</h1>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-[var(--text-secondary)] text-xs md:text-sm">
+              <span className="flex items-center gap-1.5 truncate max-w-[200px]"><Mail size={13} /> {formData.email}</span>
               <span className="badge badge-indigo">Pro Tier</span>
             </div>
           </div>
         </div>
-        <button 
-          onClick={handleSubmit} 
+        <button
+          onClick={handleSubmit}
           disabled={isSubmitting}
-          className={`btn-primary px-8 h-12 ${saveStatus === 'success' ? 'bg-[var(--color-success)]' : ''}`}
+          className={`btn-primary w-full sm:w-auto px-6 md:px-8 h-11 md:h-12 shrink-0 ${saveStatus === 'success' ? 'bg-[var(--color-success)]' : ''}`}
         >
-          {isSubmitting ? 'Syncing...' : saveStatus === 'success' ? 'Synced' : 'Update Profile'}
+          {isSubmitting ? 'Saving...' : saveStatus === 'success' ? 'Saved ✓' : 'Update Profile'}
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl w-fit">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-              activeTab === tab.id 
-                ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm' 
-                : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
-            }`}
-          >
-            {tab.icon}
-            {tab.label}
-          </button>
-        ))}
+      {/* Tabs — scrollable on mobile */}
+      <div className="overflow-x-auto pb-1">
+        <div className="flex gap-1 p-1 bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl w-fit min-w-full sm:min-w-0">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-1 sm:flex-none justify-center ${activeTab === tab.id
+                  ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm'
+                  : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
+                }`}
+            >
+              {tab.icon}
+              <span className="hidden xs:inline sm:inline">{tab.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Content */}
@@ -230,7 +233,7 @@ const ProfileSettings = () => {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Highest Qualification</label>
                 <div className="relative">
-                  <select 
+                  <select
                     name="highestQualification"
                     value={formData.highestQualification}
                     onChange={handleInputChange}
@@ -249,11 +252,11 @@ const ProfileSettings = () => {
               {formData.highestQualification === 'Others' && (
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Specify Qualification</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={formData.manualQualification}
                     onChange={(e) => setFormData(prev => ({ ...prev, manualQualification: e.target.value }))}
-                    className="input" 
+                    className="input"
                     placeholder="e.g. Diploma"
                   />
                 </div>
@@ -272,24 +275,23 @@ const ProfileSettings = () => {
 
         {activeTab === 'professional' && (
           <div className="card space-y-8">
-            <h3 className="text-xl font-bold text-[var(--text-primary)]">Career Trajectory</h3>
+            <h3 className="text-xl font-bold text-[var(--text-primary)]">Career Path</h3>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {['Student', 'Professional', 'Job Seeker', 'Entrepreneur'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFormData(prev => ({ ...prev, currentStatus: status }))}
-                  className={`flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                    formData.currentStatus === status 
-                      ? 'border-[var(--accent-primary)] bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)]' 
+                  className={`flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all ${formData.currentStatus === status
+                      ? 'border-[var(--accent-primary)] bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)]'
                       : 'border-[var(--border-default)] text-[var(--text-tertiary)] hover:border-[var(--border-strong)]'
-                  }`}
+                    }`}
                 >
                   <Briefcase size={20} />
                   <span className="text-xs font-bold">{status}</span>
                 </button>
               ))}
             </div>
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Career Target</label>
                 <input type="text" name="careerGoal" value={formData.careerGoal} onChange={handleInputChange} className="input" placeholder="e.g. AI Researcher" />
@@ -305,7 +307,7 @@ const ProfileSettings = () => {
         {activeTab === 'skills' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="card space-y-4">
-              <h3 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2"><Cpu size={18} /> Skill Matrix</h3>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2"><Cpu size={18} /> Core Skills</h3>
               <textarea name="skills" value={formData.skills} onChange={handleInputChange} rows="6" className="input resize-none" placeholder="List your skills..." />
             </div>
             <div className="card space-y-4">
@@ -322,36 +324,83 @@ const ProfileSettings = () => {
         {activeTab === 'account' && (
           <div className="card space-y-8">
             <h3 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2"><Lock size={20} /> Security & Account</h3>
-            
+
             <form onSubmit={handlePasswordChange} className="space-y-6">
               <h4 className="text-sm font-bold text-[var(--text-secondary)] uppercase tracking-widest border-b border-[var(--border-faint)] pb-2">Change Password</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[var(--text-tertiary)]">Current Password</label>
-                  <input type="password" required value={passwordData.currentPassword} onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})} className="input" />
+                  <div className="relative group">
+                    <input
+                      type={showCurrent ? "text" : "password"}
+                      required
+                      value={passwordData.currentPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                      className="input pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrent(!showCurrent)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[var(--accent-primary)] transition-colors focus:outline-none"
+                    >
+                      {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[var(--text-tertiary)]">New Password</label>
-                  <input type="password" required value={passwordData.newPassword} onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})} className="input" />
+                  <div className="relative group">
+                    <input
+                      type={showNew ? "text" : "password"}
+                      required
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                      className="input pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNew(!showNew)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[var(--accent-primary)] transition-colors focus:outline-none"
+                    >
+                      {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[var(--text-tertiary)]">Confirm New</label>
-                  <input type="password" required value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})} className="input" />
+                  <div className="relative group">
+                    <input
+                      type={showConfirm ? "text" : "password"}
+                      required
+                      value={passwordData.confirmPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                      className="input pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirm(!showConfirm)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[var(--accent-primary)] transition-colors focus:outline-none"
+                    >
+                      {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className="flex justify-between items-center">
-                {passwordError && <span className="text-xs font-bold text-[var(--color-danger)]">{passwordError}</span>}
-                {passwordStatus === 'success' && <span className="text-xs font-bold text-[var(--color-success)]">Password updated!</span>}
-                <button type="submit" className="btn-primary ml-auto">Update Password</button>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div>
+                  {passwordError && <span className="text-xs font-bold text-[var(--color-danger)]">{passwordError}</span>}
+                  {passwordStatus === 'success' && <span className="text-xs font-bold text-[var(--color-success)]">Password updated!</span>}
+                </div>
+                <button type="submit" className="btn-primary w-full sm:w-auto">Update Password</button>
               </div>
             </form>
 
-            <div className="pt-8 border-t border-[var(--border-faint)] flex items-center justify-between bg-[var(--color-danger-subtle)] p-6 rounded-xl">
+            <div className="pt-6 md:pt-8 border-t border-[var(--border-faint)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[var(--color-danger-subtle)] p-4 md:p-6 rounded-xl">
               <div>
                 <h4 className="font-bold text-[var(--color-danger)]">Delete Account</h4>
-                <p className="text-sm text-[var(--text-secondary)]">This action is permanent and cannot be undone.</p>
+                <p className="text-xs md:text-sm text-[var(--text-secondary)] mt-0.5">This action is permanent and cannot be undone.</p>
               </div>
-              <button onClick={() => setShowDeleteModal(true)} className="btn-destructive">Delete My Account</button>
+              <button onClick={() => setShowDeleteModal(true)} className="btn-destructive w-full sm:w-auto shrink-0">Delete My Account</button>
             </div>
           </div>
         )}
@@ -368,8 +417,8 @@ const ProfileSettings = () => {
               <h2 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Delete Account?</h2>
               <p className="text-[var(--text-secondary)]">We're sorry to see you go. Please tell us why you're leaving.</p>
             </div>
-            <select 
-              value={deleteReason} 
+            <select
+              value={deleteReason}
               onChange={(e) => setDeleteReason(e.target.value)}
               className="input"
             >

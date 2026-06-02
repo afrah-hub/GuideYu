@@ -8,6 +8,15 @@ const HeroSection = ({ data, loading }) => {
   const count = useMotionValue(0);
   const rounded = useTransform(count, Math.round);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
+
+  useEffect(() => {
+    const isNew = localStorage.getItem('isNewlyRegistered');
+    if (isNew === 'true') {
+      setIsNewUser(true);
+      localStorage.removeItem('isNewlyRegistered');
+    }
+  }, []);
 
   useEffect(() => {
     if (data?.pathProgress !== undefined && !hasAnimated) {
@@ -18,7 +27,7 @@ const HeroSection = ({ data, loading }) => {
   }, [data?.pathProgress, count, hasAnimated]);
 
   if (loading) {
-    return <div className="w-full h-[300px] bg-[var(--bg-overlay)] rounded-[40px] animate-pulse" />;
+    return <div className="w-full h-[200px] md:h-[300px] bg-[var(--bg-overlay)] rounded-[24px] md:rounded-[40px] animate-pulse" />;
   }
 
   if (!data) return null;
@@ -33,7 +42,7 @@ const HeroSection = ({ data, loading }) => {
   const getAIFeedback = (progress) => {
     if (progress <= 30) return "You are laying the foundation. Focus on core concepts to build momentum.";
     if (progress <= 70) return "You are progressing steadily. Complete advanced modules to improve readiness.";
-    return "Optimal alignment achieved. You are highly prepared for this career trajectory.";
+    return "Optimal alignment achieved. You are highly prepared for this career path.";
   };
 
   const progress = data.pathProgress || 0;
@@ -57,7 +66,7 @@ const HeroSection = ({ data, loading }) => {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 p-8 md:p-10">
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-10 p-5 sm:p-7 md:p-10">
         {/* Left Side: Greeting & Summary */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -66,20 +75,75 @@ const HeroSection = ({ data, loading }) => {
           className="flex-1 space-y-6"
         >
           <div className="space-y-2">
-            <h1 className="text-[40px] md:text-[48px] font-black text-[var(--text-primary)] leading-[1.1] tracking-tighter">
-              Welcome back, <br />
-              <span className="text-[var(--text-accent)] drop-shadow-[0_0_20px_rgba(39,116,174,0.4)]">
-                {data.firstName}.
-              </span>
-            </h1>
-            <p className="text-[var(--text-secondary)] text-lg font-medium max-w-xl leading-relaxed">
-              {data.targetRole ? (
-                <>Your readiness for <span className="text-[var(--text-primary)] font-bold">{domain}</span> is <span className="text-[var(--text-accent)] font-bold">{progress}%</span>.</>
-              ) : (
-                <>Ready to architect your future? Start exploring paths tailored to your potential.</>
-              )}
-            </p>
+            {isNewUser ? (
+              <>
+                <h1 className="text-[28px] sm:text-[36px] md:text-[44px] lg:text-[48px] font-black text-[var(--text-primary)] leading-[1.1] tracking-tighter">
+                  Welcome to <br />
+                  <span className="text-[var(--text-accent)] drop-shadow-[0_0_20px_rgba(39,116,174,0.4)]">
+                    GuideYu
+                  </span>
+                </h1>
+                <p className="text-[var(--text-secondary)] text-sm sm:text-base lg:text-lg font-medium max-w-xl leading-relaxed">
+                  Start your personalized learning journey.
+                </p>
+              </>
+            ) : (
+              <>
+                <h1 className="text-[28px] sm:text-[36px] md:text-[44px] lg:text-[48px] font-black text-[var(--text-primary)] leading-[1.1] tracking-tighter">
+                  Welcome Back, <br />
+                  <span className="text-[var(--text-accent)] drop-shadow-[0_0_20px_rgba(39,116,174,0.4)]">
+                    {data.firstName}
+                  </span>
+                </h1>
+                <p className="text-[var(--text-secondary)] text-sm sm:text-base lg:text-lg font-medium max-w-xl leading-relaxed">
+                  Continue where you left off.
+                </p>
+              </>
+            )}
           </div>
+
+          {/* ── Selected Career Goal Banner ── */}
+          {data.targetRole && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="relative flex items-center gap-4 px-5 py-4 rounded-[18px] border border-[var(--accent-primary)]/30 bg-gradient-to-r from-[var(--accent-primary)]/10 via-[var(--bg-surface)] to-[var(--accent-primary)]/5 backdrop-blur-xl shadow-sm overflow-hidden"
+            >
+              {/* Shimmer sweep */}
+              <motion.div
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 3 }}
+                className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"
+              />
+
+              {/* Icon */}
+              <div className="shrink-0 w-10 h-10 rounded-xl bg-[var(--accent-primary)]/20 border border-[var(--accent-primary)]/30 flex items-center justify-center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
+
+              {/* Text */}
+              <div className="flex-1 min-w-0">
+                <p className="text-[9px] font-black text-[var(--text-accent)] uppercase tracking-[0.3em] mb-0.5">
+                  Your Active Career Goal
+                </p>
+                <p className="text-[var(--text-primary)] font-black text-base sm:text-lg leading-none truncate drop-shadow-[0_0_12px_rgba(39,116,174,0.35)]">
+                  {data.targetRole}
+                </p>
+              </div>
+
+              {/* Live pulse dot */}
+              <div className="shrink-0 flex items-center gap-1.5">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent-primary)] opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--accent-primary)]" />
+                </span>
+                <span className="text-[9px] font-black text-[var(--text-accent)] uppercase tracking-widest hidden sm:block">Active</span>
+              </div>
+            </motion.div>
+          )}
 
           {/* AI Insight Block */}
           <motion.div
@@ -91,7 +155,7 @@ const HeroSection = ({ data, loading }) => {
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex items-center justify-between">
-                <p className="text-[9px] font-black text-[var(--text-accent)] uppercase tracking-[0.3em]">Nexus Intelligence Summary</p>
+                <p className="text-[9px] font-black text-[var(--text-accent)] uppercase tracking-[0.3em]">Career Insights Summary</p>
                 {data.targetRole && (
                   <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${status.bg} ${status.border} ${status.color}`}>
                     {status.label}
@@ -101,37 +165,37 @@ const HeroSection = ({ data, loading }) => {
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">
                 {data.targetRole
                   ? getAIFeedback(progress)
-                  : "Neural engine initialized. Awaiting user profile completion to generate insights."
+                  : "System initialized. Complete your profile to generate career insights."
                 }
               </p>
             </div>
           </motion.div>
 
-          <div className="flex flex-wrap items-center gap-4 pt-1">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 pt-1">
             <button
-              onClick={() => navigate('/learning-nexus')}
-              className="px-6 py-3 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-primary)] rounded-full font-black text-xs uppercase tracking-widest shadow-md transition-all flex items-center gap-2 hover:scale-105 active:scale-95"
+              onClick={() => navigate('/resume-builder')}
+              className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-primary)] rounded-full font-black text-xs uppercase tracking-widest shadow-md transition-all flex items-center gap-2 hover:scale-105 active:scale-95"
             >
-              Resume Module
+              Resume Builder
               <ArrowRight size={16} />
             </button>
             <button
               onClick={() => navigate('/career-path')}
-              className="px-6 py-3 border border-[var(--border-strong)] hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] rounded-full font-black text-xs uppercase tracking-widest transition-all"
+              className="px-4 sm:px-6 py-2.5 sm:py-3 border border-[var(--border-strong)] hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] rounded-full font-black text-xs uppercase tracking-widest transition-all"
             >
               View Roadmap
             </button>
           </div>
         </motion.div>
 
-        {/* Right Side: Dynamic Readiness Stat */}
+        {/* Right Side: Dynamic Readiness Stat — hidden on small screens */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="relative flex items-center justify-center lg:w-1/4"
+          className="hidden sm:flex relative items-center justify-center lg:w-1/4 shrink-0"
         >
-          <div className="w-64 h-64 rounded-full border-[12px] border-[var(--border-default)] flex items-center justify-center relative bg-[var(--bg-surface)] backdrop-blur-md shadow-sm">
+          <div className="w-44 h-44 sm:w-52 sm:h-52 md:w-64 md:h-64 rounded-full border-[8px] md:border-[12px] border-[var(--border-default)] flex items-center justify-center relative bg-[var(--bg-surface)] backdrop-blur-md shadow-sm">
             <svg className="absolute inset-0 w-full h-full -rotate-90">
               <circle
                 cx="50%"

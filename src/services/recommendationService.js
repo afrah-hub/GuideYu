@@ -1,15 +1,14 @@
 const API_URL = '/api';
 
 export const recommendationService = {
-  getAICareers: async () => {
+  getAICareers: async (limit) => {
     try {
-      const response = await fetch(`${API_URL}/recommendations/ai-careers`, {
+      const url = limit ? `${API_URL}/recommendations/ai-careers?limit=${limit}` : `${API_URL}/recommendations/ai-careers`;
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        // Assumes credentials like cookies are handled by apiFetch-like wrapper or standard fetch
-        // We'll use standard fetch with credentials: 'include' to be safe
         credentials: 'include'
       });
 
@@ -70,11 +69,15 @@ export const recommendationService = {
       throw error;
     }
   },
-  getSyllabus: async (moduleName, targetCareer) => {
+  getSyllabus: async (moduleName, targetCareer, savedMapId) => {
     try {
-      const url = targetCareer 
+      let url = targetCareer 
         ? `${API_URL}/recommendations/syllabus?moduleName=${encodeURIComponent(moduleName)}&targetCareer=${encodeURIComponent(targetCareer)}`
         : `${API_URL}/recommendations/syllabus?moduleName=${encodeURIComponent(moduleName)}`;
+        
+      if (savedMapId) {
+        url += `&savedMapId=${savedMapId}`;
+      }
         
       const response = await fetch(url, {
         method: 'GET',

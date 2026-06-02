@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Bell, Search, User as UserIcon, Settings, LogOut, Sun, Moon } from 'lucide-react';
+import { Bell, Menu, User as UserIcon, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoutModal from './LogoutModal';
 import { useTheme } from '../context/ThemeContext';
 
-const DashboardTopbar = () => {
+const DashboardTopbar = ({ onMenuToggle }) => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -31,23 +31,25 @@ const DashboardTopbar = () => {
 
   return (
     <>
-      <header className="h-[56px] flex items-center justify-between px-6 bg-[var(--bg-base)] border-b border-[var(--border-faint)] sticky top-0 z-30 transition-colors duration-500">
-        {/* Modern Search Bar */}
-        <div className="relative w-[340px] group">
-          <input
-            type="text"
-            placeholder="Search resources, roles, or skills..."
-            className="w-full bg-[var(--bg-subtle)] border border-[var(--border-default)] rounded-xl px-4 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:bg-[var(--bg-surface)] focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary-subtle)] transition-all duration-300 shadow-sm"
-          />
-        </div>
+      <header className="h-14 md:h-[56px] flex items-center justify-between px-4 md:px-6 bg-[var(--bg-base)] border-b border-[var(--border-faint)] sticky top-0 z-30 transition-colors duration-500 gap-3">
+
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={onMenuToggle}
+          className="md:hidden flex-shrink-0 w-9 h-9 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] flex items-center justify-center transition-all"
+          aria-label="Open navigation"
+        >
+          <Menu size={20} />
+        </button>
+
+
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 md:gap-6 ml-auto">
           {/* Theme Toggle */}
-          {/* Theme Toggle */}
-          <button 
+          <button
             onClick={toggleTheme}
-            className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)] text-[var(--text-tertiary)] hover:text-[var(--text-accent)] transition-all shadow-sm flex items-center justify-center group"
+            className="w-9 h-9 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)] text-[var(--text-tertiary)] hover:text-[var(--text-accent)] transition-all shadow-sm flex items-center justify-center"
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
           >
             <AnimatePresence mode="wait">
@@ -73,16 +75,20 @@ const DashboardTopbar = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-3 transition-opacity hover:opacity-80"
+              className="flex items-center gap-2 md:gap-3 transition-opacity hover:opacity-80"
             >
-              <div className="w-8 h-8 rounded-full bg-[var(--gradient-brand)] flex items-center justify-center text-[var(--text-primary)] text-xs font-bold shrink-0">
-                {user?.fullName?.[0] || 'U'}
+              <div className="w-8 h-8 rounded-full bg-[var(--gradient-brand)] flex items-center justify-center text-[var(--text-primary)] text-xs font-bold shrink-0 overflow-hidden">
+                {user?.profileImageUrl || user?.ProfileImageUrl ? (
+                  <img src={user.profileImageUrl || user.ProfileImageUrl} alt="Profile" className="w-full h-full object-cover" loading="lazy" />
+                ) : (
+                  user?.fullName?.[0] || 'U'
+                )}
               </div>
               <div className="hidden sm:flex flex-col items-start leading-tight">
-                <span className="text-sm font-medium text-[var(--text-primary)]">
+                <span className="text-sm font-medium text-[var(--text-primary)] max-w-[100px] truncate">
                   {user?.fullName?.split(' ')[0] || 'User'}
                 </span>
-                <span className="text-[12px] text-[var(--text-tertiary)]">
+                <span className="text-[11px] text-[var(--text-tertiary)]">
                   {user?.role || 'Member'}
                 </span>
               </div>
@@ -95,11 +101,15 @@ const DashboardTopbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 8 }}
                   transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute right-0 mt-3 dropdown"
+                  className="absolute right-0 mt-3 dropdown w-[220px] sm:w-auto"
                 >
                   <div className="px-3 py-3 border-b border-[var(--border-faint)] flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--gradient-brand)] flex items-center justify-center text-[var(--text-primary)] text-sm font-bold shrink-0">
-                      {user?.fullName?.[0] || 'U'}
+                    <div className="w-10 h-10 rounded-full bg-[var(--gradient-brand)] flex items-center justify-center text-[var(--text-primary)] text-sm font-bold shrink-0 overflow-hidden">
+                      {user?.profileImageUrl || user?.ProfileImageUrl ? (
+                        <img src={user.profileImageUrl || user.ProfileImageUrl} alt="Profile" className="w-full h-full object-cover" loading="lazy" />
+                      ) : (
+                        user?.fullName?.[0] || 'U'
+                      )}
                     </div>
                     <div className="flex flex-col min-w-0">
                       <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
@@ -157,4 +167,3 @@ const DashboardTopbar = () => {
 };
 
 export default DashboardTopbar;
-

@@ -19,9 +19,9 @@ const GoogleIcon = () => (
 const InteractiveVisuals = () => {
   const [currentFeature, setCurrentFeature] = useState(0);
   const features = [
-    { title: "Quantum Analysis", desc: "AI maps your professional DNA to perfect real-world roles." },
+    { title: "Skill Analysis", desc: "AI maps your skills and experience to find the perfect real-world roles." },
     { title: "Market Intelligence", desc: "Real-time industry insights power your next career leap." },
-    { title: "Neural Sync", desc: "Automatically match your skills with top global opportunities." }
+    { title: "Career Alignment", desc: "Automatically match your skills with the best industry opportunities." }
   ];
 
   useEffect(() => {
@@ -101,8 +101,11 @@ const Register = () => {
   useEffect(() => {
     if (user) {
       const userRole = user.role || user.Role;
+      const careerGoal = user.careerGoal || user.CareerGoal;
       if (userRole === 'Admin') {
         navigate('/admin/dashboard');
+      } else if (!careerGoal) {
+        navigate('/profile-setup');
       } else {
         navigate('/dashboard');
       }
@@ -177,6 +180,8 @@ const Register = () => {
       // Auto-login after successful registration
       try {
         await login({ email: email.trim(), password });
+        // Flag for one-time new user greeting on the dashboard
+        localStorage.setItem('isNewlyRegistered', 'true');
         navigate('/profile-setup');
       } catch (loginErr) {
         // Fallback: If auto-login fails, send to login
@@ -238,7 +243,7 @@ const Register = () => {
               <h1 className="text-3xl sm:text-4xl font-black text-[var(--text-primary)]  tracking-tighter mb-2 font-poppins">
                 Create <span className="text-[var(--text-accent)]       drop-shadow-[0_0_30px_rgba(0,93,195,0.3)]">Account.</span>
               </h1>
-              <p className="text-slate-400  font-bold text-[10px] uppercase tracking-[0.3em]">Initialize Professional DNA</p>
+              <p className="text-slate-400  font-bold text-[10px] uppercase tracking-[0.3em]">Create Your Professional Profile</p>
             </div>
 
             {error && (

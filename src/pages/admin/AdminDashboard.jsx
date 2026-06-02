@@ -23,7 +23,8 @@ import {
   Briefcase,
   Search,
   Filter,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import {
   BarChart,
@@ -40,8 +41,8 @@ import adminService from '../../services/adminService';
 
 const RealStatCard = ({ title, value, change, trend, icon: Icon, color, loading }) => (
   <motion.div
-    whileHover={{ y: -5 }}
-    className="bg-bg-surface border border-border-default p-8 rounded-[2.5rem] relative group overflow-hidden shadow-sm hover:shadow-xl transition-all"
+    whileHover={{ y: -8, scale: 1.01 }}
+    className="bg-bg-surface border border-[#F97316]/10 p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] relative group overflow-hidden shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(249,115,22,0.1)] hover:border-[#F97316]/30 transition-all duration-500"
   >
     {loading ? (
       <div className="space-y-6 animate-pulse">
@@ -54,7 +55,7 @@ const RealStatCard = ({ title, value, change, trend, icon: Icon, color, loading 
     ) : (
       <>
         <div className="flex justify-between items-start mb-8 relative z-10">
-          <div className={`p-4 rounded-2xl ${color} shadow-inner`}>
+          <div className={`p-4 rounded-2xl ${color}`}>
             <Icon size={24} />
           </div>
           {change && (
@@ -66,10 +67,10 @@ const RealStatCard = ({ title, value, change, trend, icon: Icon, color, loading 
         </div>
         <div className="relative z-10">
           <h3 className="text-text-tertiary text-[10px] font-black uppercase tracking-[0.2em] mb-1.5">{title}</h3>
-          <p className="text-4xl font-display font-black text-text-primary tracking-tighter">{value}</p>
+          <p className="text-3xl md:text-5xl font-display font-black text-text-primary tracking-tighter leading-none">{value}</p>
         </div>
         {/* Subtle background glow */}
-        <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-accent-primary/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute -right-12 -bottom-12 w-32 h-32 bg-[#F97316]/8 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       </>
     )}
   </motion.div>
@@ -104,42 +105,42 @@ const AdminDashboard = () => {
 
   // Real data calculations
   const dashboardStats = useMemo(() => [
-    { 
-      title: "Total Students", 
-      value: users?.length || 0, 
-      change: "+14%", 
-      trend: "up", 
-      icon: Users, 
-      color: "bg-blue-500/10 text-blue-600" 
+    {
+      title: "Total Students",
+      value: users?.length || 0,
+      change: "+14%",
+      trend: "up",
+      icon: Users,
+      color: "bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white shadow-[0_4px_12px_rgba(249,115,22,0.35)]"
     },
-    { 
-      title: "Active Curriculums", 
-      value: careers?.length || 0, 
-      change: "+2.4%", 
-      trend: "up", 
-      icon: Briefcase, 
-      color: "bg-purple-500/10 text-purple-600" 
+    {
+      title: "Active Curriculums",
+      value: careers?.length || 0,
+      change: "+2.4%",
+      trend: "up",
+      icon: Briefcase,
+      color: "bg-gradient-to-br from-[#FB923C] to-[#F97316] text-white shadow-[0_4px_12px_rgba(249,115,22,0.3)]"
     },
-    { 
-      title: "Learning Modules", 
-      value: stats?.totalModules || 124, // Assuming stats provides this or fallback to a realistic based on current structure
-      change: "+8", 
-      trend: "up", 
-      icon: Layers, 
-      color: "bg-amber-500/10 text-amber-600" 
+    {
+      title: "Learning Modules",
+      value: stats?.totalModules || 124,
+      change: "+8",
+      trend: "up",
+      icon: Layers,
+      color: "bg-gradient-to-br from-[#F59E0B] to-[#D97706] text-white shadow-[0_4px_12px_rgba(245,158,11,0.3)]"
     },
-    { 
-      title: "AI Generations", 
-      value: stats?.aiRequestsCount || 0, 
-      change: "-2%", 
-      trend: "down", 
-      icon: Sparkles, 
-      color: "bg-rose-500/10 text-rose-600" 
+    {
+      title: "AI Generations",
+      value: stats?.aiRequestsCount || 0,
+      change: "-2%",
+      trend: "down",
+      icon: Sparkles,
+      color: "bg-gradient-to-br from-[#EA580C] to-[#C2410C] text-white shadow-[0_4px_12px_rgba(234,88,12,0.35)]"
     }
   ], [users, careers, stats]);
 
   const recentUsers = useMemo(() => {
-     return [...users].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+    return [...users].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
   }, [users]);
 
   const categorySpread = useMemo(() => {
@@ -187,231 +188,242 @@ const AdminDashboard = () => {
 
   return (
     <div className="max-w-[1600px] mx-auto space-y-12 pb-20">
-      
+
       {/* 1. HEADER — Reality Driven */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-2xl bg-gradient-brand flex items-center justify-center text-white shadow-lg">
-                <BarChart3 size={20} />
-             </div>
-             <h1 className="text-4xl font-display font-black text-text-primary tracking-tight">Platform Analytics</h1>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-brand flex items-center justify-center text-white shadow-lg">
+              <BarChart3 size={20} />
+            </div>
+      <div className="text-2xl md:text-4xl font-display font-black text-text-primary tracking-tight">Platform Analytics</div>
           </div>
           <p className="text-sm font-medium text-text-tertiary max-w-2xl leading-relaxed">
             Real-time management console for GuideYu's career ecosystem. Data is synchronized directly from active learning streams.
           </p>
         </div>
         <div className="flex items-center gap-3">
-           <div className="px-4 py-2 bg-bg-surface border border-border-default rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-tertiary">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              Live Status: Active
-           </div>
-           <button className="p-3 bg-bg-surface border border-border-default rounded-xl text-text-tertiary hover:text-accent-primary transition-all">
-              <Calendar size={18} />
-           </button>
+          <div className="px-4 py-2 bg-bg-surface border border-border-default rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+            Live Status: Active
+          </div>
+          <button className="p-3 bg-bg-surface border border-border-default rounded-xl text-text-tertiary hover:text-accent-primary transition-all">
+            <Calendar size={18} />
+          </button>
         </div>
       </div>
 
       {/* 2. CORE METRICS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-         {dashboardStats.map((stat, i) => (
-           <RealStatCard key={i} {...stat} loading={loading} />
-         ))}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        {dashboardStats.map((stat, i) => (
+          <RealStatCard key={i} {...stat} loading={loading} />
+        ))}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-        
-        {/* 3. STUDENT GROWTH CHART */}
-        <div className="xl:col-span-2 bg-bg-surface border border-border-default rounded-[3rem] p-10 space-y-10 shadow-sm relative overflow-hidden group">
-           <div className="flex items-center justify-between relative z-10">
-              <div className="flex items-center gap-5">
-                 <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600 shadow-inner transition-transform group-hover:scale-110">
-                    <TrendingUp size={28} />
-                 </div>
-                 <div>
-                    <h3 className="text-2xl font-black text-text-primary tracking-tight">Student Enrollment</h3>
-                    <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mt-1">Platform-wide Engagement</p>
-                 </div>
-              </div>
-              <div className="flex items-center gap-2 bg-bg-subtle p-1.5 rounded-xl border border-border-default">
-                 {['Daily', 'Weekly', 'Monthly'].map(p => (
-                   <button 
-                    key={p} 
-                    onClick={() => setTimeframe(p)}
-                    className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${timeframe === p ? 'bg-bg-surface shadow-sm text-accent-primary' : 'text-text-tertiary hover:text-text-primary'}`}
-                   >
-                      {p}
-                   </button>
-                 ))}
-              </div>
-           </div>
 
-           <div className="h-[400px] w-full relative z-10">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <defs>
-                    <linearGradient id="enrollGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity={1} />
-                      <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity={0.4} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: 'var(--text-tertiary)', fontSize: 10, fontWeight: 900 }} 
-                    dy={15}
-                  />
-                  <YAxis 
-                    hide 
-                  />
-                  <Tooltip 
-                    cursor={{ fill: 'var(--bg-subtle)', opacity: 0.5 }}
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <div className="bg-bg-surface/90 backdrop-blur-xl border border-border-default p-4 rounded-2xl shadow-2xl">
-                            <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mb-1">{payload[0].payload.name}</p>
-                            <p className="text-2xl font-black text-accent-primary">{payload[0].value} New</p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Bar 
-                    dataKey="value" 
-                    fill="url(#enrollGradient)" 
-                    radius={[12, 12, 12, 12]} 
-                    barSize={40}
-                  >
-                    { [1,2,3,4,5,6,7].map((entry, index) => (
-                      <Cell key={`cell-${index}`} className="hover:opacity-80 transition-opacity" />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-           </div>
+        {/* 3. STUDENT GROWTH CHART */}
+        <div className="xl:col-span-2 bg-bg-surface border border-border-default rounded-[2rem] md:rounded-[3rem] p-5 md:p-10 space-y-6 md:space-y-10 shadow-sm relative overflow-hidden group">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+            <div className="flex items-center gap-5">
+                <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-[#F97316] to-[#FB923C] flex items-center justify-center text-white shadow-[0_4px_12px_rgba(249,115,22,0.3)] transition-transform group-hover:scale-110">
+                <TrendingUp size={28} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-text-primary tracking-tight">Student Enrollment</h3>
+                <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mt-1">Platform-wide Engagement</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 bg-bg-subtle p-1.5 rounded-xl border border-border-default">
+              {['Daily', 'Weekly', 'Monthly'].map(p => (
+                <button
+                  key={p}
+                  onClick={() => setTimeframe(p)}
+                  className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${timeframe === p ? 'bg-bg-surface shadow-sm text-accent-primary' : 'text-text-tertiary hover:text-text-primary'}`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="h-[220px] md:h-[400px] w-full relative z-10">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData}>
+                <defs>
+                  <linearGradient id="enrollGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#F97316" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#FB923C" stopOpacity={0.15} />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: 'var(--text-tertiary)', fontSize: 10, fontWeight: 900 }}
+                  dy={15}
+                />
+                <YAxis
+                  hide
+                />
+                <Tooltip
+                  cursor={{ fill: 'var(--bg-subtle)', opacity: 0.5 }}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-bg-surface/90 backdrop-blur-xl border border-border-default p-4 rounded-2xl shadow-2xl">
+                          <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mb-1">{payload[0].payload.name}</p>
+                          <p className="text-2xl font-black text-accent-primary">{payload[0].value} New</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar
+                  dataKey="value"
+                  fill="url(#enrollGradient)"
+                  radius={[12, 12, 12, 12]}
+                  barSize={40}
+                >
+                  {[1, 2, 3, 4, 5, 6, 7].map((entry, index) => (
+                    <Cell key={`cell-${index}`} className="hover:opacity-80 transition-opacity" />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* 4. DOMAIN DISTRIBUTION */}
-        <div className="bg-bg-surface border border-border-default rounded-[3rem] p-10 space-y-10 shadow-sm">
-           <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
-                 <Layers size={24} />
-              </div>
-              <div>
-                 <h3 className="text-xl font-black text-text-primary tracking-tight">Domain Matrix</h3>
-                 <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mt-0.5">Career Distribution</p>
-              </div>
-           </div>
+        <div className="bg-bg-surface border border-border-default rounded-[2rem] md:rounded-[3rem] p-5 md:p-10 space-y-6 md:space-y-10 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FB923C] to-[#F97316] flex items-center justify-center text-white shadow-[0_4px_12px_rgba(249,115,22,0.3)]">
+              <Layers size={24} />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-text-primary tracking-tight">Domain Categories</h3>
+              <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mt-0.5">Career Distribution</p>
+            </div>
+          </div>
 
-           <div className="space-y-6">
-              {loading ? (
-                [1,2,3,4].map(i => <div key={i} className="h-12 bg-bg-subtle rounded-2xl animate-pulse" />)
-              ) : categorySpread.slice(0, 5).map((cat, i) => (
-                <div key={i} className="space-y-3 group">
-                   <div className="flex items-center justify-between">
-                      <span className="text-xs font-black text-text-primary group-hover:text-accent-primary transition-colors">{cat.name}</span>
-                      <span className="text-xs font-black text-text-tertiary">{cat.value} Paths</span>
-                   </div>
-                   <div className="h-2 w-full bg-bg-subtle rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(cat.value / careers.length) * 100}%` }}
-                        transition={{ duration: 1.5, delay: i * 0.1 }}
-                        className="h-full bg-gradient-brand rounded-full"
-                      />
-                   </div>
+          <div className="space-y-6">
+            {loading ? (
+              [1, 2, 3, 4].map(i => <div key={i} className="h-12 bg-bg-subtle rounded-2xl animate-pulse" />)
+            ) : categorySpread.slice(0, 5).map((cat, i) => (
+              <div key={i} className="space-y-3 group">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-text-primary group-hover:text-accent-primary transition-colors">{cat.name}</span>
+                  <span className="text-xs font-black text-text-tertiary">{cat.value} Paths</span>
                 </div>
-              ))}
-           </div>
+                <div className="h-2 w-full bg-bg-subtle rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(cat.value / careers.length) * 100}%` }}
+                    transition={{ duration: 1.5, delay: i * 0.1 }}
+                    className="h-full bg-gradient-brand rounded-full"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
 
-           <div className="pt-6 border-t border-border-default/50">
-              <button className="w-full py-4 rounded-2xl bg-bg-subtle text-[10px] font-black uppercase tracking-widest text-text-secondary hover:bg-accent-primary hover:text-white transition-all">
-                 View All Domains
-              </button>
-           </div>
+          <div className="pt-6 border-t border-border-default/50">
+            <button
+              onClick={() => navigate('/admin/careers')}
+              className="w-full py-4 rounded-2xl bg-bg-subtle text-[10px] font-black uppercase tracking-widest text-text-secondary hover:bg-accent-primary hover:text-white transition-all"
+            >
+              View All Domains
+            </button>
+          </div>
         </div>
       </div>
 
       {/* 5. RECENT STUDENT ACTIVITY TABLE */}
-      <div className="bg-bg-surface border border-border-default rounded-[3rem] overflow-hidden shadow-sm">
-         <div className="p-10 border-b border-border-default flex items-center justify-between">
-            <div className="flex items-center gap-4">
-               <div className="w-12 h-12 rounded-xl bg-accent-primary/10 flex items-center justify-center text-accent-primary">
-                  <Users size={24} />
-               </div>
-               <div>
-                  <h3 className="text-2xl font-black text-text-primary tracking-tight">Recent Registrations</h3>
-                  <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mt-1">Direct from Student Database</p>
-               </div>
+      <div className="bg-bg-surface border border-border-default rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-sm">
+        <div className="p-5 md:p-10 border-b border-border-default flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-accent-primary/10 flex items-center justify-center text-accent-primary">
+              <Users size={24} />
             </div>
-            <button className="text-[11px] font-black uppercase tracking-widest text-accent-primary hover:underline flex items-center gap-2">
-               Full Directory <ChevronRight size={16} />
-            </button>
-         </div>
+            <div>
+              <h3 className="text-2xl font-black text-text-primary tracking-tight">Recent Registrations</h3>
+              <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mt-1">Direct from Student Database</p>
+            </div>
+          </div>
+        </div>
 
-         <div className="overflow-x-auto">
-            <table className="w-full text-left">
-               <thead>
-                  <tr className="bg-bg-subtle/50">
-                     <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">Student Entity</th>
-                     <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">System Role</th>
-                     <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">Join Protocol</th>
-                     <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">Status</th>
-                     <th className="px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary text-right">Actions</th>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-bg-subtle/50">
+                <th className="px-4 md:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary whitespace-nowrap">Student Name</th>
+                <th className="hidden sm:table-cell px-4 md:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary whitespace-nowrap">Role</th>
+                <th className="hidden md:table-cell px-4 md:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary whitespace-nowrap">Joined On</th>
+                <th className="px-4 md:px-10 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary whitespace-nowrap">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border-default">
+              {loading ? (
+                [1, 2, 3].map(i => (
+                  <tr key={i} className="animate-pulse">
+                    <td colSpan="4" className="px-10 py-8"><div className="h-6 bg-bg-subtle rounded-lg w-full" /></td>
                   </tr>
-               </thead>
-               <tbody className="divide-y divide-border-default">
-                  {loading ? (
-                    [1,2,3].map(i => (
-                      <tr key={i} className="animate-pulse">
-                         <td colSpan="5" className="px-10 py-8"><div className="h-6 bg-bg-subtle rounded-lg w-full" /></td>
-                      </tr>
-                    ))
-                  ) : recentUsers.map((user) => (
-                    <tr key={user.id} className="group hover:bg-bg-subtle/30 transition-all">
-                       <td className="px-10 py-6">
-                          <div className="flex items-center gap-4">
-                             <div className="w-10 h-10 rounded-full bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center text-accent-primary font-black text-xs uppercase">
-                                {user.name?.charAt(0)}
-                             </div>
-                             <div>
-                                <p className="text-sm font-black text-text-primary">{user.name}</p>
-                                <p className="text-xs font-bold text-text-tertiary">{user.email}</p>
-                             </div>
-                          </div>
-                       </td>
-                       <td className="px-10 py-6">
-                          <div className="flex items-center gap-2">
-                             <ShieldCheck size={14} className={user.role === 'Admin' ? 'text-purple-500' : 'text-blue-500'} />
-                             <span className={`text-[10px] font-black uppercase tracking-widest ${user.role === 'Admin' ? 'text-purple-600' : 'text-blue-600'}`}>
-                                {user.role}
-                             </span>
-                          </div>
-                       </td>
-                       <td className="px-10 py-6">
-                          <span className="text-xs font-bold text-text-tertiary">
-                             {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          </span>
-                       </td>
-                       <td className="px-10 py-6">
-                          <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100 w-fit">
-                             <CheckCircle2 size={12} />
-                             <span className="text-[9px] font-black uppercase tracking-widest">Active</span>
-                          </div>
-                       </td>
-                       <td className="px-10 py-6 text-right">
-                          <button className="p-2 text-text-tertiary hover:text-accent-primary transition-colors">
-                             <MoreVertical size={18} />
-                          </button>
-                       </td>
-                    </tr>
-                  ))}
-               </tbody>
-            </table>
-         </div>
+                ))
+              ) : recentUsers.map((user) => (
+                <tr key={user.id} className="group hover:bg-bg-subtle/30 transition-all">
+                  <td className="px-4 md:px-10 py-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center text-accent-primary font-black text-xs uppercase overflow-hidden shrink-0">
+                        {user.profileImageUrl ? (
+                          <img 
+                            src={user.profileImageUrl} 
+                            alt="" 
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => { e.target.onerror = null; e.target.src = ''; }} 
+                          />
+                        ) : (
+                          (user.fullName || user.name || '').charAt(0)
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-text-primary">{user.fullName || user.name}</p>
+                        <p className="text-xs font-bold text-text-tertiary">{user.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="hidden sm:table-cell px-4 md:px-10 py-6">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck size={14} className={user.role === 'Admin' ? 'text-amber-500' : 'text-[#F97316]'} />
+                      <span className={`text-[10px] font-black uppercase tracking-widest ${user.role === 'Admin' ? 'text-amber-600' : 'text-[#F97316]'}`}>
+                        {user.role}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="hidden md:table-cell px-4 md:px-10 py-6">
+                    <span className="text-xs font-bold text-text-tertiary">
+                      {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
+                  </td>
+                  <td className="px-4 md:px-10 py-6">
+                    {user.isBlocked ? (
+                      <div className="flex items-center gap-2 px-3 py-1 bg-[var(--color-danger-subtle)] text-[var(--color-danger)] rounded-full border border-[var(--color-danger)]/25 w-fit">
+                        <AlertCircle size={12} />
+                        <span className="text-[9px] font-black uppercase tracking-widest">Blocked</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 px-3 py-1 bg-[var(--color-success-subtle)] text-[var(--color-success)] rounded-full border border-[var(--color-success)]/25 w-fit">
+                        <CheckCircle2 size={12} />
+                        <span className="text-[9px] font-black uppercase tracking-widest">Active</span>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

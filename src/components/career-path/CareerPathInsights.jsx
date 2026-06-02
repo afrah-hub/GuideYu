@@ -60,7 +60,7 @@ const CareerPathInsights = ({ insights, loading }) => {
             <Settings size={22} />
           </div>
           <div>
-            <h4 className="text-base font-bold text-[var(--text-primary)] tracking-tight">Switch Trajectory</h4>
+            <h4 className="text-base font-bold text-[var(--text-primary)] tracking-tight">Switch Career Path</h4>
             <p className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mt-0.5 opacity-70">Explore Roles</p>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { Cpu, Code, Zap, Sparkles } from 'lucide-react';
 
 const SkillProgressSection = ({ skills, loading }) => {
   if (loading) {
-    return <div className="h-[400px] bg-[var(--bg-subtle)] rounded-[40px] animate-pulse" />;
+    return <div className="h-[200px] md:h-[400px] bg-[var(--bg-subtle)] rounded-[28px] md:rounded-[40px] animate-pulse" />;
   }
 
   if (!skills || skills.length === 0) return null;
@@ -15,7 +15,7 @@ const SkillProgressSection = ({ skills, loading }) => {
         <div className="p-2.5 bg-[var(--accent-primary)]/20 rounded-xl text-[var(--text-accent)] shadow-[0_0_15px_rgba(30,58,138,0.3)]">
           <Cpu size={20} />
         </div>
-        <h2 className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.4em]">Neural Growth Grid</h2>
+        <h2 className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.4em]">Skill Growth Grid</h2>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -25,7 +25,7 @@ const SkillProgressSection = ({ skills, loading }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
-            className="p-8 rounded-[32px] bg-[var(--bg-surface)]/[0.02] border border-[var(--bg-surface)]/5 backdrop-blur-md hover:bg-[var(--bg-surface)]/[0.04] hover:border-blue-900/30 transition-all duration-500 group relative overflow-hidden"
+            className="p-5 md:p-8 rounded-[24px] md:rounded-[32px] bg-[var(--bg-surface)]/[0.02] border border-[var(--bg-surface)]/5 backdrop-blur-md hover:bg-[var(--bg-surface)]/[0.04] hover:border-blue-900/30 transition-all duration-500 group relative overflow-hidden"
           >
             {/* Subtle glow on hover */}
             <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--bg-surface)]0/5 blur-[80px] rounded-full group-hover:bg-[var(--accent-primary-subtle)] transition-colors" />
@@ -36,7 +36,7 @@ const SkillProgressSection = ({ skills, loading }) => {
                   <Code size={24} />
                 </div>
                 <div>
-                  <h4 className="font-black text-xl text-[var(--text-primary)] leading-tight tracking-tight">{skill.skillName}</h4>
+                  <h4 className="font-black text-base md:text-xl text-[var(--text-primary)] leading-tight tracking-tight">{skill.skillName}</h4>
                   <div className="flex items-center gap-2 mt-1.5">
                     <Sparkles size={12} className="text-[var(--accent-primary)]" />
                     <span className="text-[10px] font-black text-[var(--text-tertiary)] uppercase tracking-widest">Level {Math.ceil(skill.proficiency / 20)} Mastery</span>
@@ -48,7 +48,7 @@ const SkillProgressSection = ({ skills, loading }) => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Zap size={14} className="text-amber-500 fill-amber-500/20" />
-                    <span className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.2em]">{skill.proficiency}% Sync Strength</span>
+                    <span className="text-[11px] font-black text-[var(--text-tertiary)] uppercase tracking-[0.2em]">{skill.proficiency}% Progress</span>
                   </div>
                 </div>
 
@@ -64,10 +64,10 @@ const SkillProgressSection = ({ skills, loading }) => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end md:w-32">
-                <div className="text-right">
-                  <span className="block text-3xl font-black text-[var(--text-primary)] tracking-tighter">+{Math.floor(Math.random() * 20 + 5)}%</span>
-                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">Velocity</span>
+              <div className="flex items-center justify-start md:justify-end md:w-32">
+                <div className="text-left md:text-right">
+                  <span className="block text-xl md:text-3xl font-black text-[var(--text-primary)] tracking-tighter">+{Math.floor(Math.random() * 20 + 5)}%</span>
+                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">Growth Rate</span>
                 </div>
               </div>
             </div>

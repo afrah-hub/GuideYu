@@ -113,7 +113,7 @@ const ProfileSetup = () => {
               <h1 className="text-3xl sm:text-4xl font-black text-[var(--text-primary)] mb-2 font-poppins tracking-tighter">
                 Welcome, <span className="text-[var(--text-accent)]">{user?.fullName?.split(' ')?.[0] || 'Guest'}</span>!
               </h1>
-              <p className="text-[var(--text-secondary)] font-medium tracking-tight">Let's decode your professional DNA.</p>
+              <p className="text-[var(--text-secondary)] font-medium tracking-tight">Let's build your professional profile.</p>
             </div>
             <div className="flex items-center justify-center mb-6 group hover:rotate-12 transition-transform duration-500">
               <BrandLogo className="group-hover:scale-110 transition-transform" size={48} />
@@ -397,7 +397,7 @@ const ProfileSetup = () => {
                 className="space-y-8"
               >
                 <div className="space-y-2.5">
-                  <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.2em] ml-1">Core Skills / Skill Matrix</label>
+                  <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.2em] ml-1">Core Skills</label>
                   <div className="relative group">
                     <Cpu className="absolute left-4 top-5 text-slate-400 group-focus-within:text-[var(--accent-primary)] transition-colors" size={18} />
                     <textarea
@@ -494,7 +494,7 @@ const ProfileSetup = () => {
                 <div className="space-y-4">
                   <h2 className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tighter leading-tight">Profile Setup<br />Complete!</h2>
                   <p className="text-[var(--text-secondary)] font-medium max-w-sm mx-auto leading-relaxed">
-                    Welcome to the future of career guidance. Redirecting you to your neural dashboard...
+                    Welcome to GuideYu. Redirecting to your dashboard...
                   </p>
                 </div>
               </motion.div>
