@@ -15,7 +15,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5142',
+        target: 'https://guideyu-cgfjhqaqdddudgax.southeastasia-01.azurewebsites.net',
         changeOrigin: true,
         secure: false
       }
